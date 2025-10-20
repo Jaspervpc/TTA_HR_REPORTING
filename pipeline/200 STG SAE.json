@@ -869,6 +869,27 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "transform-employee-md",
+				"type": "AzureFunctionActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"functionName": "run_script_emp",
+					"method": "GET"
+				},
+				"linkedServiceName": {
+					"referenceName": "temd",
+					"type": "LinkedServiceReference"
+				}
 			}
 		],
 		"variables": {
