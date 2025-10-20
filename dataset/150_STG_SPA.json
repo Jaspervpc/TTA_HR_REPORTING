@@ -1,0 +1,20 @@
+{
+	"name": "150_STG_SPA",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "HR_REPORT_DB",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Datasets - PERSONIO API DATA"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "150_STG",
+			"table": "SPA_PERSONIO_API_EMPLOYEES"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

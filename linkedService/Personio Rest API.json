@@ -1,0 +1,13 @@
+{
+	"name": "Personio Rest API",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://api.personio.de/v1/company/custom-reports/reports/86a27088-ef39-4cc2-8a25-f967f6f62eea",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}

@@ -1,0 +1,13 @@
+{
+	"name": "RestResource_StandardApi",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "RestService_StandardApi",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

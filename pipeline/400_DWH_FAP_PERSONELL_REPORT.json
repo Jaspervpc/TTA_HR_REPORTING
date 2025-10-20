@@ -1,0 +1,72 @@
+{
+	"name": "400_DWH_FAP_PERSONELL_REPORT",
+	"properties": {
+		"activities": [
+			{
+				"name": "Script1",
+				"type": "Script",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [
+					{
+						"activity": "400_DWH FAP",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "HR_REPORT_DB",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": "truncate table [400_DWH].[ACT_PERIOD] \n\nINSERT INTO [400_DWH].[ACT_PERIOD] ( [ACTPERIOD], [ACTPERIOD_DATE] )\nSELECT MAX(  load_period ) as [ACTPERIOD], EOMONTH( concat(left(max(load_period), 4), '/', right(max(LOAD_PERIOD), 2), '/01')) as [ACTPERIOD_DATE]\n  FROM [200_STG].[F_PERSONIO_DATA]"
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			},
+			{
+				"name": "400_DWH FAP",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "400_PERSONELL_DATA_PYTHON",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "FULL LOAD - PERSONIO API EMPLOYEES"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-06-30T08:49:30Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

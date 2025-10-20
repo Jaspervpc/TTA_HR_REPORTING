@@ -1,0 +1,14 @@
+{
+	"name": "TTA-HR-ADF",
+	"properties": {
+		"globalConfigurations": {
+			"PipelineBillingEnabled": "false"
+		}
+	},
+	"location": "northeurope",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "5aa1f2ed-5e64-40a5-97cb-5d330fbbd2c5",
+		"tenantId": "6c00c214-9e4e-4163-a34c-3456477fe95d"
+	}
+}

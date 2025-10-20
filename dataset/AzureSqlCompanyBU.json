@@ -1,0 +1,17 @@
+{
+	"name": "AzureSqlCompanyBU",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "HR_REPORT_DB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "200_STG",
+			"table": "D_COMPANY_BU"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

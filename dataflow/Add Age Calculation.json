@@ -1,0 +1,120 @@
+{
+	"name": "Add Age Calculation",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "200_STG_SAE",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "200_STG_SAE",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "Zeilenaendern"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          SID as string,",
+				"          ID as integer,",
+				"          VALID_FROM as date,",
+				"          VALID_TO as date,",
+				"          COST_CENTRE as integer,",
+				"          cost_center_name as string,",
+				"          cost_center_weight as short,",
+				"          DEPARTMENT as string,",
+				"          FIRST_ENTRY_DATE as date,",
+				"          ENTRY_DATE_CURRENT_EMPLOYMENT_PERIOD as date,",
+				"          LEAVING_DATE_CURRENT_EMPLOYMENT_PERIOD as date,",
+				"          HIRED_AS as string,",
+				"          EMPLOYEE_GROUPS_BY_FUNCTION as string,",
+				"          MAILADDRESS as string,",
+				"          FTE as string,",
+				"          GENDER as string,",
+				"          POSITION as string,",
+				"          COMPANY as string,",
+				"          EXIT_TYPE as string,",
+				"          WEEKLY_HOURS as string,",
+				"          upload_date as timestamp,",
+				"          FIRSTNAME as string,",
+				"          LASTNAME as string,",
+				"          PLACE_OF_BUSINESS as string,",
+				"          DEGREE_OF_SEVERE_DISABILITY as string,",
+				"          DATE_OF_BIRTH as string,",
+				"          LOAD_PERIOD as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source1 derive(AGE_Calculated = /* round(minus( */\r",
+				"    /* toTimestamp(concat(LOAD_PERIOD, '-01'), 'yyyy-MM-dd') */\r",
+				"round(minus(toTimestamp(concat(substring(LOAD_PERIOD, 0, 4),'-', substring(LOAD_PERIOD, 5, 6),'-01'), 'yyyy-MM-dd'), \r",
+				"     toTimestamp(DATE_OF_BIRTH, 'yyyy-MM-dd'))  / 1000 / 60 / 60 / 24 / 365.25, 0, 2) \r",
+				"/* toInteger(age) */,",
+				"          Length_of_Employment = round(minus(toDate(concat(LOAD_PERIOD, '-01'), 'yyyy-MM-dd'), FIRST_ENTRY_DATE)/365, 0, 2)\r",
+				"/* toInteger(age) */,",
+				"          numeric_fte = toDecimal(FTE)) ~> derivedColumn1",
+				"derivedColumn1 alterRow(updateIf(true())) ~> Zeilenaendern",
+				"Zeilenaendern sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     recreate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          SID,",
+				"          ID,",
+				"          VALID_FROM,",
+				"          VALID_TO,",
+				"          COST_CENTRE,",
+				"          cost_center_name,",
+				"          cost_center_weight,",
+				"          DEPARTMENT,",
+				"          FIRST_ENTRY_DATE,",
+				"          ENTRY_DATE_CURRENT_EMPLOYMENT_PERIOD,",
+				"          LEAVING_DATE_CURRENT_EMPLOYMENT_PERIOD,",
+				"          HIRED_AS,",
+				"          EMPLOYEE_GROUPS_BY_FUNCTION,",
+				"          MAILADDRESS,",
+				"          FTE,",
+				"          GENDER,",
+				"          POSITION,",
+				"          COMPANY,",
+				"          EXIT_TYPE,",
+				"          WEEKLY_HOURS,",
+				"          UPLOAD_DATE = upload_date,",
+				"          FIRSTNAME,",
+				"          LASTNAME,",
+				"          PLACE_OF_BUSINESS,",
+				"          DEGREE_OF_SEVERE_DISABILITY,",
+				"          AGE = AGE_Calculated,",
+				"          LOAD_PERIOD,",
+				"          LENGTH_OF_EMPLOYMENT_IN_YEARS = Length_of_Employment,",
+				"          DATE_OF_BIRTH",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

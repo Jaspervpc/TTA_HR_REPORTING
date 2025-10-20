@@ -1,0 +1,44 @@
+{
+	"name": "Excel_Translations",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureHRBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Tabelle1",
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "Jobfunctions HR Reporting.xlsx",
+				"folderPath": "Übersetzungen",
+				"container": "hrreporting"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "Bereich",
+				"type": "String"
+			},
+			{
+				"name": "Deutsch",
+				"type": "String"
+			},
+			{
+				"name": "Deutsch",
+				"type": "String"
+			},
+			{
+				"name": "Englisch",
+				"type": "String"
+			},
+			{
+				"name": "für PowerBi ",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

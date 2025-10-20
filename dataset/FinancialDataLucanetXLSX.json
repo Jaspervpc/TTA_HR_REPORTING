@@ -1,0 +1,129 @@
+{
+	"name": "FinancialDataLucanetXLSX",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureHRBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Subsidiaries Overview per month",
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "Financial Reporting Data_LN.xlsx",
+				"folderPath": "Financials",
+				"container": "hrreporting"
+			},
+			"range": "D8:AC500",
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "Gesellschaft",
+				"type": "String"
+			},
+			{
+				"name": "Konto",
+				"type": "String"
+			},
+			{
+				"name": "2022-01-31",
+				"type": "String"
+			},
+			{
+				"name": "2022-02-28",
+				"type": "String"
+			},
+			{
+				"name": "2022-03-31",
+				"type": "String"
+			},
+			{
+				"name": "2022-04-30",
+				"type": "String"
+			},
+			{
+				"name": "2022-05-31",
+				"type": "String"
+			},
+			{
+				"name": "2022-06-30",
+				"type": "String"
+			},
+			{
+				"name": "2022-07-31",
+				"type": "String"
+			},
+			{
+				"name": "2022-08-31",
+				"type": "String"
+			},
+			{
+				"name": "2022-09-30",
+				"type": "String"
+			},
+			{
+				"name": "2022-10-31",
+				"type": "String"
+			},
+			{
+				"name": "2022-11-30",
+				"type": "String"
+			},
+			{
+				"name": "2022-12-31",
+				"type": "String"
+			},
+			{
+				"name": "2023-01-31",
+				"type": "String"
+			},
+			{
+				"name": "2023-02-28",
+				"type": "String"
+			},
+			{
+				"name": "2023-03-31",
+				"type": "String"
+			},
+			{
+				"name": "2023-04-30",
+				"type": "String"
+			},
+			{
+				"name": "2023-05-31",
+				"type": "String"
+			},
+			{
+				"name": "2023-06-30",
+				"type": "String"
+			},
+			{
+				"name": "2023-07-31",
+				"type": "String"
+			},
+			{
+				"name": "2023-08-31",
+				"type": "String"
+			},
+			{
+				"name": "2023-09-30",
+				"type": "String"
+			},
+			{
+				"name": "2023-10-31",
+				"type": "String"
+			},
+			{
+				"name": "2023-11-30",
+				"type": "String"
+			},
+			{
+				"name": "2023-12-31",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

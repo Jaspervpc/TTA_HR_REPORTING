@@ -1,0 +1,263 @@
+{
+	"name": "100 STG SRAE",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get Bearer",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "POST",
+					"headers": {
+						"Content-Type": "application/json"
+					},
+					"url": "https://api.personio.de/v1/auth?client_id=papi-1228d1b2-0fcc-4d05-bfaf-06c92f6b6d68&client_secret=papi-ZDUxY2M2N2ItYzY3NS00OTNiLTgyMTMtNDZmNTA5NjkzNzNj",
+					"body": "\""
+				}
+			},
+			{
+				"name": "Set Token",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Get Bearer",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "BEARERTOKEN",
+					"value": {
+						"value": "@concat('Bearer ', activity('Get Bearer').output.data.token)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Copy JSON to Blob",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Set Token",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"additionalHeaders": {
+							"Authorization": {
+								"value": "@variables('BEARERTOKEN')",
+								"type": "Expression"
+							}
+						},
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "Personio_API_Data",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "JSON_PersonioAPI",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "DF_SRAE",
+				"description": "Dataflow to fulfill table SRAE\n",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Copy JSON to Blob",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF 100 STG Personio api data",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "Get Bearer Standard Api",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "POST",
+					"headers": {
+						"Content-Type": "application/json"
+					},
+					"url": "https://api.personio.de/v1/auth?client_id=OTI2MjA2NjgyODIzMThkYzMwYWVlMGUw&client_secret=MTQ3ZGIzNDlmMTMzNmQwZTI4ZWVlMDVkN2U4MjZhYzkwODYw",
+					"body": "\""
+				}
+			},
+			{
+				"name": "Set Token Standard Api",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Get Bearer Standard Api",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "token",
+					"value": {
+						"value": "@concat('Bearer ', activity('Get Bearer Standard Api').output.data.token)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Copy JSON to Blob 2",
+				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [
+					{
+						"activity": "Set Token Standard Api",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"additionalHeaders": {
+							"Authorization": {
+								"value": "@variables('token')",
+								"type": "Expression"
+							}
+						},
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "RestResource_StandardApi",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "JSON_standard_Api",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"variables": {
+			"BEARERTOKEN": {
+				"type": "String"
+			},
+			"token": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "FULL LOAD - PERSONIO API EMPLOYEES"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-05-12T06:43:26Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

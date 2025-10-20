@@ -1,0 +1,36 @@
+{
+	"name": "200_CompanyTranslation",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "HR_REPORT_DB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "COMPANY",
+				"type": "nvarchar"
+			},
+			{
+				"name": "COMPANY_KEY",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VALID_TO",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "VALID_FROM",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "200_STG",
+			"table": "D_COMPANY_TRANSLATION"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

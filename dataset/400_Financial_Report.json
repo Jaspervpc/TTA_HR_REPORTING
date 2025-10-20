@@ -1,0 +1,59 @@
+{
+	"name": "400_Financial_Report",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "HR_REPORT_DB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "FR_PERIOD",
+				"type": "varchar"
+			},
+			{
+				"name": "FR_YEAR",
+				"type": "varchar"
+			},
+			{
+				"name": "FR_MONTH",
+				"type": "varchar"
+			},
+			{
+				"name": "FR_COMPANY",
+				"type": "varchar"
+			},
+			{
+				"name": "FR_BU",
+				"type": "varchar"
+			},
+			{
+				"name": "FR_ACCOUNT",
+				"type": "varchar"
+			},
+			{
+				"name": "FR_VALUE_ACT",
+				"type": "decimal",
+				"precision": 27,
+				"scale": 4
+			},
+			{
+				"name": "FR_VALUE_BUDGET",
+				"type": "decimal",
+				"precision": 27,
+				"scale": 4
+			},
+			{
+				"name": "FR_PERIODID",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "400_DWH",
+			"table": "F_FINANCIAL_REPORT"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

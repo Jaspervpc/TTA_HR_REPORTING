@@ -1,0 +1,154 @@
+{
+	"name": "PersonioASCII",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureHRBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "Personio/aktueller_Monat",
+				"container": "hrreporting"
+			},
+			"columnDelimiter": ";",
+			"encodingName": "UTF-8",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Status",
+				"type": "String"
+			},
+			{
+				"name": "ID",
+				"type": "String"
+			},
+			{
+				"name": "E-Mail",
+				"type": "String"
+			},
+			{
+				"name": "Nachname (bürgerlich)",
+				"type": "String"
+			},
+			{
+				"name": "Vorname (bürgerlich)",
+				"type": "String"
+			},
+			{
+				"name": "Abteilung",
+				"type": "String"
+			},
+			{
+				"name": "Alter",
+				"type": "String"
+			},
+			{
+				"name": "Angestellt als",
+				"type": "String"
+			},
+			{
+				"name": "Anstelldatum",
+				"type": "String"
+			},
+			{
+				"name": "Anstellungsart",
+				"type": "String"
+			},
+			{
+				"name": "Mitarbeitergruppen nach Funktion",
+				"type": "String"
+			},
+			{
+				"name": "Austrittsart11",
+				"type": "String"
+			},
+			{
+				"name": "Austrittsart12",
+				"type": "String"
+			},
+			{
+				"name": "Austrittsdatum (aktueller Beschäftigungszeitraum)",
+				"type": "String"
+			},
+			{
+				"name": "Betriebsstätte",
+				"type": "String"
+			},
+			{
+				"name": "Betriebszugehörigkeit (in Jahren)",
+				"type": "String"
+			},
+			{
+				"name": "Eintrittsdatum (aktueller Beschäftigungszeitraum)",
+				"type": "String"
+			},
+			{
+				"name": "Ende des Arbeitsverhältnisses",
+				"type": "String"
+			},
+			{
+				"name": "Ersteintrittsdatum",
+				"type": "String"
+			},
+			{
+				"name": "FTE",
+				"type": "String"
+			},
+			{
+				"name": "Geschlecht",
+				"type": "String"
+			},
+			{
+				"name": "Gesellschaft",
+				"type": "String"
+			},
+			{
+				"name": "Grad der Behinderung",
+				"type": "String"
+			},
+			{
+				"name": "Kostenstelle",
+				"type": "String"
+			},
+			{
+				"name": "Kündigung (Datum)",
+				"type": "String"
+			},
+			{
+				"name": "Kündigungsgrund",
+				"type": "String"
+			},
+			{
+				"name": "Mitarbeitendenzahl (Status „Aktiv“ und „Auszeit“)",
+				"type": "String"
+			},
+			{
+				"name": "DATEV Personalnummer",
+				"type": "String"
+			},
+			{
+				"name": "Position",
+				"type": "String"
+			},
+			{
+				"name": "Wochenstunden",
+				"type": "String"
+			},
+			{
+				"name": "Bad Churn",
+				"type": "String"
+			},
+			{
+				"name": "Arbeits- und Wegeunfall / Work and Commute-related Accidents – genommen (Tage)",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,37 @@
+{
+	"name": "400_FINANCIAL_DATA",
+	"properties": {
+		"activities": [
+			{
+				"name": "400_FINANCIAL_DATA",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "400_FINANCIAL_DATA",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "400_DWH"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-04-12T14:41:59Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

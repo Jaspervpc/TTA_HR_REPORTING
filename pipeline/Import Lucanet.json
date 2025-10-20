@@ -1,0 +1,49 @@
+{
+	"name": "Import Lucanet",
+	"properties": {
+		"activities": [
+			{
+				"name": "200_FINANCIAL_DATA_LUCANET",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "200_FINANCIAL_DATA_LUCANET",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "400_FINANCIAL_DATA",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "200_FINANCIAL_DATA_LUCANET",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "400_FINANCIAL_DATA",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2023-08-15T13:42:05Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,38 @@
+{
+	"name": "175 STG SPAE",
+	"properties": {
+		"activities": [
+			{
+				"name": "DF SPAE",
+				"description": "Dataflow to fulfill table SPAE\n",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF 175 STG Personio api data",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "FULL LOAD - PERSONIO API EMPLOYEES"
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-01-08T10:20:45Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

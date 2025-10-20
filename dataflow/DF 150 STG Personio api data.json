@@ -1,0 +1,193 @@
+{
+	"name": "DF 150 STG Personio api data",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "100_STG_SRAE",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "100_STG_SRAE",
+						"type": "DatasetReference"
+					},
+					"name": "source2"
+				},
+				{
+					"dataset": {
+						"referenceName": "100_STG_SRAE",
+						"type": "DatasetReference"
+					},
+					"name": "badchurns"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "150_STG_SPA",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "pivot1"
+				},
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "join1"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "MapDrifted1",
+					"description": "Hiermit wird für jede abweichende Spalte eine explizite Zuordnung erstellt."
+				},
+				{
+					"name": "join2"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          employee_id as integer,",
+				"          attribute_id as string,",
+				"          cost_center_id as integer,",
+				"          cost_center_name as string,",
+				"          cost_center_weight as integer,",
+				"          data_type as string,",
+				"          effective_date as date,",
+				"          entity_id as integer,",
+				"          value as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source(output(",
+				"          employee_id as integer,",
+				"          attribute_id as string,",
+				"          cost_center_id as integer,",
+				"          cost_center_name as string,",
+				"          cost_center_weight as integer,",
+				"          data_type as string,",
+				"          effective_date as date,",
+				"          entity_id as integer,",
+				"          value as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source2",
+				"source(output(",
+				"          employee_id as integer,",
+				"          attribute_id as string,",
+				"          effective_date as date,",
+				"          value as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'SELECT \"employee_id\", \"attribute_id\", \"effective_date\", \"value\"\\nFROM \"100_STG\".\"SRAE_raw_api_employees\"\\nWHERE \"attribute_id\" = \\'dynamic_7467162\\'',",
+				"     format: 'query') ~> badchurns",
+				"source1 pivot(groupBy(employee_id,",
+				"          effective_date),",
+				"     pivotBy(attribute_id),",
+				"     {} = max(value),",
+				"     columnNaming: '$N$V',",
+				"     lateral: true) ~> pivot1",
+				"source2 aggregate(groupBy(employee_id,",
+				"          effective_date),",
+				"     cost_center_id = max(cost_center_id),",
+				"          cost_center_name = max(cost_center_name),",
+				"          cost_center_weight = max(cost_center_weight)) ~> aggregate1",
+				"aggregate1 derive(sqlhash = md5(employee_id,effective_date)) ~> derivedColumn1",
+				"derivedColumn1, MapDrifted1 join(aggregate1@employee_id == pivot1@employee_id",
+				"     && aggregate1@effective_date == pivot1@effective_date,",
+				"     joinType:'outer',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join2 derive(upload_date = fromUTC(currentUTC(), 'Europe/Berlin')) ~> derivedColumn2",
+				"pivot1 derive(cost_centers = toString(byName('cost_centers')),",
+				"          department_id = toString(byName('department_id')),",
+				"          dynamic_4455758 = toString(byName('dynamic_4455758')),",
+				"          dynamic_4455760 = toString(byName('dynamic_4455760')),",
+				"          dynamic_4668965 = toString(byName('dynamic_4668965')),",
+				"          dynamic_4668966 = toString(byName('dynamic_4668966')),",
+				"          dynamic_4668967 = toString(byName('dynamic_4668967')),",
+				"          dynamic_4908028 = toString(byName('dynamic_4908028')),",
+				"          dynamic_4908107 = toString(byName('dynamic_4908107')),",
+				"          dynamic_5849877 = toString(byName('dynamic_5849877')),",
+				"          dynamic_7173473 = toString(byName('dynamic_7173473')),",
+				"          email = toString(byName('email')),",
+				"          employment_type = toString(byName('employment_type')),",
+				"          fte = toString(byName('fte')),",
+				"          gender = toString(byName('gender')),",
+				"          position = toString(byName('position')),",
+				"          status = toString(byName('status')),",
+				"          subcompany_id = toString(byName('subcompany_id')),",
+				"          supervisor_id = toString(byName('supervisor_id')),",
+				"          termination_type = toString(byName('termination_type')),",
+				"          weekly_working_hours = toString(byName('weekly_working_hours'))) ~> MapDrifted1",
+				"join1, badchurns join(aggregate1@employee_id == badchurns@employee_id",
+				"     && aggregate1@effective_date == badchurns@effective_date,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join2",
+				"derivedColumn2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     recreate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          employee_id = aggregate1@employee_id,",
+				"          effective_date = aggregate1@effective_date,",
+				"          cost_center_id,",
+				"          cost_center_name,",
+				"          cost_center_weight,",
+				"          sqlhash,",
+				"          employee_id = pivot1@employee_id,",
+				"          effective_date = pivot1@effective_date,",
+				"          department_id,",
+				"          first_entry_date = dynamic_4668965,",
+				"          entry_date = dynamic_4668966,",
+				"          exit_date = dynamic_4668967,",
+				"          permanent_employee = dynamic_4908028,",
+				"          dynamic_7173473,",
+				"          email,",
+				"          fte,",
+				"          gender,",
+				"          position,",
+				"          subcompany_id,",
+				"          termination_type,",
+				"          weekly_working_hours,",
+				"          upload_date,",
+				"          place_of_business = dynamic_5849877,",
+				"          DEGREE_OF_SEVERE_DISABILITY = dynamic_4908107,",
+				"          age = dynamic_4455758,",
+				"          bad_churn = value,",
+				"          status",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

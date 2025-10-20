@@ -1,0 +1,20 @@
+{
+	"name": "200_STG_SAE",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "HR_REPORT_DB",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Datasets - PERSONIO API DATA"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "200_STG",
+			"table": "SAE_API_EMPLOYEES"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,46 @@
+{
+	"name": "400_Personell_Budget",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "HR_REPORT_DB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "COMPANY",
+				"type": "nvarchar"
+			},
+			{
+				"name": "KPI",
+				"type": "nvarchar"
+			},
+			{
+				"name": "FUNCTION",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PERIOD",
+				"type": "nvarchar"
+			},
+			{
+				"name": "BUDGET_HC",
+				"type": "decimal",
+				"precision": 27,
+				"scale": 4
+			},
+			{
+				"name": "BUDGET_FTE",
+				"type": "decimal",
+				"precision": 27,
+				"scale": 4
+			}
+		],
+		"typeProperties": {
+			"schema": "400_DWH",
+			"table": "F_PERSONELL_BUDGET"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

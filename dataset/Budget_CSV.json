@@ -1,0 +1,86 @@
+{
+	"name": "Budget_CSV",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureHRBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "HR-Planung 2023_Daten.csv",
+				"folderPath": "Planung",
+				"container": "hrreporting"
+			},
+			"columnDelimiter": ";",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Gesellschaft",
+				"type": "String"
+			},
+			{
+				"name": "Kennzahl",
+				"type": "String"
+			},
+			{
+				"name": "Funktionsgruppe",
+				"type": "String"
+			},
+			{
+				"name": "202301",
+				"type": "String"
+			},
+			{
+				"name": "202302",
+				"type": "String"
+			},
+			{
+				"name": "202303",
+				"type": "String"
+			},
+			{
+				"name": "202304",
+				"type": "String"
+			},
+			{
+				"name": "202305",
+				"type": "String"
+			},
+			{
+				"name": "202306",
+				"type": "String"
+			},
+			{
+				"name": "202307",
+				"type": "String"
+			},
+			{
+				"name": "202308",
+				"type": "String"
+			},
+			{
+				"name": "202309",
+				"type": "String"
+			},
+			{
+				"name": "202310",
+				"type": "String"
+			},
+			{
+				"name": "202311",
+				"type": "String"
+			},
+			{
+				"name": "202312",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

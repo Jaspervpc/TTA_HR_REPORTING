@@ -1,0 +1,93 @@
+{
+	"name": "200_PERSONELL_BUDGET",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "CSV_BUDGET_NET_NEW_HIRES24",
+						"type": "DatasetReference"
+					},
+					"name": "CSV"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "100_STG_PERS_BUDGET_24",
+						"type": "DatasetReference"
+					},
+					"name": "personellbudget"
+				}
+			],
+			"transformations": [
+				{
+					"name": "FilterLeerzeile"
+				},
+				{
+					"name": "unpivotPerioden"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "derivedColumn3"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Gesellschaft as string,",
+				"          Kennzahl as string,",
+				"          Funktionsgruppe as string,",
+				"          {01.01.2024} as string,",
+				"          {01.02.2024} as string,",
+				"          {01.03.2024} as string,",
+				"          {01.04.2024} as string,",
+				"          {01.05.2024} as string,",
+				"          {01.06.2024} as string,",
+				"          {01.07.2024} as string,",
+				"          {01.08.2024} as string,",
+				"          {01.09.2024} as string,",
+				"          {01.10.2024} as string,",
+				"          {01.11.2024} as string,",
+				"          {01.12.2024} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     preferredFractionalType: 'decimal') ~> CSV",
+				"CSV filter(Gesellschaft != \"\") ~> FilterLeerzeile",
+				"FilterLeerzeile unpivot(output(",
+				"          Periode as string,",
+				"          Wert as string",
+				"     ),",
+				"     ungroupBy(Gesellschaft,",
+				"          Kennzahl,",
+				"          Funktionsgruppe),",
+				"     lateral: false,",
+				"     ignoreNullPivots: false) ~> unpivotPerioden",
+				"unpivotPerioden derive(WertN = replace(Wert, ',', '.')) ~> derivedColumn2",
+				"derivedColumn2 derive(WertN2 = toDecimal(WertN)) ~> derivedColumn3",
+				"derivedColumn3 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     recreate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          COMPANY = Gesellschaft,",
+				"          KPI = Kennzahl,",
+				"          FUNCTION = Funktionsgruppe,",
+				"          PERIOD = Periode,",
+				"          BUDGET = WertN2",
+				"     )) ~> personellbudget"
+			]
+		}
+	}
+}

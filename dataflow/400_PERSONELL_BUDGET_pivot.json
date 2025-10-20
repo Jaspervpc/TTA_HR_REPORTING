@@ -1,0 +1,184 @@
+{
+	"name": "400_PERSONELL_BUDGET_pivot",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "100_STG_PERS_BUDGET_24",
+						"type": "DatasetReference"
+					},
+					"name": "Budget100"
+				},
+				{
+					"dataset": {
+						"referenceName": "200_CompanyTranslation",
+						"type": "DatasetReference"
+					},
+					"name": "Ges"
+				},
+				{
+					"dataset": {
+						"referenceName": "400_TRANSLATION",
+						"type": "DatasetReference"
+					},
+					"name": "Translation"
+				},
+				{
+					"dataset": {
+						"referenceName": "400_PERSONELL_DATA",
+						"type": "DatasetReference"
+					},
+					"name": "source9"
+				},
+				{
+					"dataset": {
+						"referenceName": "CompanyMapping",
+						"type": "DatasetReference"
+					},
+					"name": "CompanyMapping"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable9",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "pivot1"
+				},
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "join1"
+				},
+				{
+					"name": "window1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "ABhinzufuegen"
+				},
+				{
+					"name": "MapDrifted1",
+					"description": "Hiermit wird für jede abweichende Spalte eine explizite Zuordnung erstellt."
+				},
+				{
+					"name": "join2"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          COMPANY as string,",
+				"          KPI as string,",
+				"          FUNCTION as string,",
+				"          PERIOD as string,",
+				"          BUDGET as decimal(10,2)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> Budget100",
+				"source(output(",
+				"          COMPANY as string,",
+				"          COMPANY_KEY as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> Ges",
+				"source(output(",
+				"          DATAAREA as string,",
+				"          SRC_VALUE as string,",
+				"          TRANSLATION as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'SELECT DISTINCT [DATAAREA]\\n      ,[SRC_VALUE]\\n      ,[TRANSLATION]\\n  FROM [400_DWH].[TRANSLATIONS]',",
+				"     format: 'query') ~> Translation",
+				"source(output(",
+				"          FPR_PERIOD as string,",
+				"          FPR_COMPANY as string,",
+				"          FPR_FUNCTION as string,",
+				"          FPR_FTE_EMPLOYEES_END_PERIOD_INCL_GROUPCHANGE as decimal(18,4)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'SELECT [FPR_PERIOD]\\n      ,[FPR_COMPANY]\\n      ,[FPR_FUNCTION]\\n      ,[FPR_FTE_EMPLOYEES_END_PERIOD_INCL_GROUPCHANGE]\\nFROM [400_DWH].[F_PERSONELL_REPORT]\\nWHERE [FPR_PERIOD] = \\'202312\\'',",
+				"     format: 'query') ~> source9",
+				"source(output(",
+				"          Gesellschaft as string,",
+				"          {Kürzel} as string,",
+				"          {gültig bis} as string,",
+				"          {gültig ab} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> CompanyMapping",
+				"Budget100 pivot(groupBy(COMPANY,",
+				"          FUNCTION,",
+				"          PERIOD),",
+				"     pivotBy(KPI),",
+				"     {} = sum(BUDGET),",
+				"     columnNaming: '$N$V',",
+				"     lateral: true) ~> pivot1",
+				"source9 aggregate(groupBy(FPR_COMPANY,",
+				"          FPR_FUNCTION),",
+				"     EB_FTE_SUM = sum(FPR_FTE_EMPLOYEES_END_PERIOD_INCL_GROUPCHANGE)) ~> aggregate1",
+				"aggregate1, join2 join(FPR_COMPANY == COMPANY",
+				"     && FPR_FUNCTION == TRANSLATION,",
+				"     joinType:'outer',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 window(over(COMPANY,",
+				"          FUNCTION),",
+				"     asc(PERIOD, true),",
+				"     CumSum_NetHires = sum({Netto Neueinstellungen})) ~> window1",
+				"window1 derive({EB Budget} = {EB_FTE_SUM}+{CumSum_NetHires}) ~> derivedColumn1",
+				"derivedColumn1 window(over(FPR_COMPANY,",
+				"          FPR_FUNCTION),",
+				"     asc(PERIOD, true),",
+				"     {AB Budget} = iif(isNull(lag({EB Budget}, 1)), {EB_FTE_SUM}, lag({EB Budget}, 1))) ~> ABhinzufuegen",
+				"pivot1 derive({Netto Neueinstellungen} = toDecimal(byName('Netto Neueinstellungen'))) ~> MapDrifted1",
+				"MapDrifted1, Translation join(FUNCTION == SRC_VALUE,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join2",
+				"ABhinzufuegen sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          PERIOD,",
+				"          COMPANY,",
+				"          FUNCTION = TRANSLATION,",
+				"          EB_FTE_SUM_DEZ23 = EB_FTE_SUM,",
+				"          NET_NEW_HIRES = {Netto Neueinstellungen},",
+				"          CumSum_NetHires,",
+				"          {EB Budget},",
+				"          {AB Budget}",
+				"     )) ~> sink2"
+			]
+		}
+	}
+}

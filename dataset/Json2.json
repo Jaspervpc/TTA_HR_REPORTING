@@ -1,0 +1,152 @@
+{
+	"name": "Json2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureHRBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "JSON_PERSONIOAPI",
+				"folderPath": "Personio",
+				"container": "hrreporting"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"success": {
+					"type": "boolean"
+				},
+				"metadata": {
+					"type": "object",
+					"properties": {
+						"total_elements": {
+							"type": "integer"
+						},
+						"current_page": {
+							"type": "integer"
+						},
+						"total_pages": {
+							"type": "integer"
+						}
+					}
+				},
+				"offset": {
+					"type": "integer"
+				},
+				"limit": {
+					"type": "integer"
+				},
+				"data": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"type": {
+								"type": "string"
+							},
+							"attributes": {
+								"type": "object",
+								"properties": {
+									"id": {
+										"type": "string"
+									},
+									"name": {
+										"type": "string"
+									},
+									"description": {
+										"type": "string"
+									},
+									"author_first_name": {
+										"type": "string"
+									},
+									"author_last_name": {
+										"type": "string"
+									},
+									"type": {
+										"type": "string"
+									},
+									"status": {
+										"type": "string"
+									},
+									"start_date": {
+										"type": "string"
+									},
+									"end_date": {
+										"type": "string"
+									},
+									"created_at": {
+										"type": "string"
+									},
+									"updated_at": {
+										"type": "string"
+									},
+									"data_refreshed_at": {
+										"type": "string"
+									},
+									"columns": {
+										"type": "array",
+										"items": {
+											"type": "string"
+										}
+									},
+									"filters": {
+										"type": "array"
+									},
+									"period_type": {
+										"type": "string"
+									},
+									"items": {
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"employee_id": {
+													"type": "integer"
+												},
+												"historical_attributes": {
+													"type": "array",
+													"items": {
+														"type": "object",
+														"properties": {
+															"attribute_id": {
+																"type": "string"
+															},
+															"data_type": {
+																"type": "string"
+															},
+															"effective_date": {
+																"type": "string"
+															},
+															"employee_id": {
+																"type": "integer"
+															},
+															"value": {
+																"type": "string"
+															}
+														}
+													}
+												}
+											}
+										}
+									},
+									"archival_status": {
+										"type": "string"
+									},
+									"archived_at": {
+										"type": "null"
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

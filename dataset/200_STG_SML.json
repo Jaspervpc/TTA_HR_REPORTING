@@ -1,0 +1,17 @@
+{
+	"name": "200_STG_SML",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "HR_REPORT_DB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "200_STG",
+			"table": "SML_MINLOADPERSONIO"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

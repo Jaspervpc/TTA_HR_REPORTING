@@ -1,0 +1,49 @@
+{
+	"name": "LucanetSQL_Data",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabaseLucanet",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "DataLevelID",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "DataLevelName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "DataLevelType",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PeriodFrom",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PeriodTo",
+				"type": "nvarchar"
+			},
+			{
+				"name": "IsClosed",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "IsArchived",
+				"type": "smallint",
+				"precision": 5
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Facts"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

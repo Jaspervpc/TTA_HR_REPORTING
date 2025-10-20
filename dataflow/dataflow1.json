@@ -1,0 +1,138 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "200_STG_SAE",
+						"type": "DatasetReference"
+					},
+					"name": "STGSAE"
+				},
+				{
+					"dataset": {
+						"referenceName": "200_STG_SML",
+						"type": "DatasetReference"
+					},
+					"name": "MINLOADPERSONIO"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "200_STG_SAE",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "join1"
+				},
+				{
+					"name": "filter1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          ID as integer,",
+				"          SID as string,",
+				"          VALID_FROM as date,",
+				"          VALID_TO as date,",
+				"          COST_CENTRE as integer,",
+				"          cost_center_name as string,",
+				"          cost_center_weight as integer,",
+				"          DEPARTMENT as string,",
+				"          FIRST_ENTRY_DATE as date,",
+				"          ENTRY_DATE_CURRENT_EMPLOYMENT_PERIOD as date,",
+				"          LEAVING_DATE_CURRENT_EMPLOYMENT_PERIOD as date,",
+				"          HIRED_AS as string,",
+				"          EMPLOYEE_GROUPS_BY_FUNCTION as string,",
+				"          MAILADDRESS as string,",
+				"          FTE as string,",
+				"          GENDER as string,",
+				"          POSITION as string,",
+				"          COMPANY as string,",
+				"          EXIT_TYPE as string,",
+				"          WEEKLY_HOURS as string,",
+				"          upload_date as timestamp,",
+				"          FIRSTNAME as string,",
+				"          LASTNAME as string,",
+				"          PLACE_OF_BUSINESS as string,",
+				"          DEGREE_OF_SEVERE_DISABILITY as string,",
+				"          DATE_OF_BIRTH as string,",
+				"          BAD_CHURN as string,",
+				"          LOAD_PERIOD as string,",
+				"          AGE as integer,",
+				"          TENURE as integer,",
+				"          start_accident_date as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> STGSAE",
+				"source(output(",
+				"          COMPANY as string,",
+				"          Min_Load_Period as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> MINLOADPERSONIO",
+				"STGSAE, MINLOADPERSONIO join(STGSAE@COMPANY == MINLOADPERSONIO@COMPANY,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 filter(toInteger(LOAD_PERIOD) >= Min_Load_Period) ~> filter1",
+				"filter1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     preSQLs:['TRUNCATE TABLE [200_STG].[SAE_API_EMPLOYEES]'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          ID,",
+				"          SID,",
+				"          VALID_FROM,",
+				"          VALID_TO,",
+				"          COST_CENTRE,",
+				"          cost_center_name,",
+				"          cost_center_weight,",
+				"          DEPARTMENT,",
+				"          FIRST_ENTRY_DATE,",
+				"          ENTRY_DATE_CURRENT_EMPLOYMENT_PERIOD,",
+				"          LEAVING_DATE_CURRENT_EMPLOYMENT_PERIOD,",
+				"          HIRED_AS,",
+				"          EMPLOYEE_GROUPS_BY_FUNCTION,",
+				"          MAILADDRESS,",
+				"          FTE,",
+				"          GENDER,",
+				"          POSITION,",
+				"          COMPANY = STGSAE@COMPANY,",
+				"          EXIT_TYPE,",
+				"          WEEKLY_HOURS,",
+				"          upload_date,",
+				"          FIRSTNAME,",
+				"          LASTNAME,",
+				"          PLACE_OF_BUSINESS,",
+				"          DEGREE_OF_SEVERE_DISABILITY,",
+				"          DATE_OF_BIRTH,",
+				"          BAD_CHURN,",
+				"          LOAD_PERIOD,",
+				"          AGE,",
+				"          TENURE,",
+				"          start_accident_date",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

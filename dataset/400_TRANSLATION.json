@@ -1,0 +1,30 @@
+{
+	"name": "400_TRANSLATION",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "HR_REPORT_DB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "DATAAREA",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SRC_VALUE",
+				"type": "nvarchar"
+			},
+			{
+				"name": "TRANSLATION",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "400_DWH",
+			"table": "TRANSLATIONS"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

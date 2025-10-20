@@ -1,0 +1,151 @@
+{
+	"name": "200_STG_SEM",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "HR_REPORT_DB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "SEM_ID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SEM_SID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SEM_VALID_FROM",
+				"type": "date"
+			},
+			{
+				"name": "SEM_VALID_TO",
+				"type": "date"
+			},
+			{
+				"name": "SEM_COST_CENTRE",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SEM_COST_CENTER_NAME",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SEM_COST_CENTER_WEIGHT",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "SEM_DEPARTMENT",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SEM_FIRST_ENTRY_DATE",
+				"type": "date"
+			},
+			{
+				"name": "SEM_ENTRY_DATE_CURRENT_EMPLOYMENT_PERIOD",
+				"type": "date"
+			},
+			{
+				"name": "SEM_LEAVING_DATE_CURRENT_EMPLOYMENT_PERIOD",
+				"type": "date"
+			},
+			{
+				"name": "SEM_HIRED_AS",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SEM_EMPLOYEE_GROUPS_BY_FUNCTION",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SEM_MAILADDRESS",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SEM_FTE",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SEM_GENDER",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SEM_POSITION",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SEM_COMPANY",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SEM_EXIT_TYPE",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SEM_WEEKLY_HOURS",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SEM_UPLOAD_DATE",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "SEM_FIRSTNAME",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SEM_LASTNAME",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SEM_PLACE_OF_BUSINESS",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SEM_DEGREE_OF_SEVERE_DISABILITY",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SEM_DATE_OF_BIRTH",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SEM_BAD_CHURN",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SEM_LOAD_PERIOD",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SEM_AGE",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "SEM_TENURE",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "SEM_START_ACCIDENT_DATE",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SEM_COMPANY_KEY",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "200_STG",
+			"table": "SEM_EMPLOYEES_MERGED"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

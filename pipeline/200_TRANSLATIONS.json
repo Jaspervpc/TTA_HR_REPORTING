@@ -1,0 +1,126 @@
+{
+	"name": "200_TRANSLATIONS",
+	"properties": {
+		"activities": [
+			{
+				"name": "200_TRANSLATIONS",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ExcelSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"preCopyScript": "truncate table [200_STG].[TRANSLATIONS]",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false,
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "Bereich",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Bereich",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Deutsch",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Deutsch",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Deutsch_kurz",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Deutsch_kurz",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Englisch",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Englisch",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "für PowerBi ",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "für PowerBi ",
+									"type": "String",
+									"physicalType": "String"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "Excel_Translations",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "200_TRANSLATIONS",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "200_STG"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-05-11T07:43:58Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

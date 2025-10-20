@@ -1,0 +1,118 @@
+{
+	"name": "AzureSqlLucanetCompanies",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabaseLucanet",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "AccountingOrConsolidationArea",
+				"type": "nvarchar"
+			},
+			{
+				"name": "OrganisationElementID",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "OrganisationElementName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "OrganisationElementChildIndex",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "SourceType",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ReportingEntityID",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "DefaultTransactionCurrency",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PermittedUsersForElement",
+				"type": "nvarchar"
+			},
+			{
+				"name": "OrganisationLevel1ID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "OrganisationLevel1",
+				"type": "nvarchar"
+			},
+			{
+				"name": "OrganisationLevel1CI",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "OrganisationLevel2ID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "OrganisationLevel2",
+				"type": "nvarchar"
+			},
+			{
+				"name": "OrganisationLevel2CI",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "OrganisationLevel3ID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "OrganisationLevel3",
+				"type": "nvarchar"
+			},
+			{
+				"name": "OrganisationLevel3CI",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "OrganisationLevel4ID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "OrganisationLevel4",
+				"type": "nvarchar"
+			},
+			{
+				"name": "OrganisationLevel4CI",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "OrganisationLevel5ID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "OrganisationLevel5",
+				"type": "nvarchar"
+			},
+			{
+				"name": "OrganisationLevel5CI",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "OrganisationStructure"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,253 @@
+{
+	"name": "400_FINANCIAL_DATA_copy1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "200_Financial_Data",
+						"type": "DatasetReference"
+					},
+					"name": "quelle"
+				},
+				{
+					"dataset": {
+						"referenceName": "D_PERIOD",
+						"type": "DatasetReference"
+					},
+					"name": "periode"
+				},
+				{
+					"dataset": {
+						"referenceName": "200_CompanyTranslation",
+						"type": "DatasetReference"
+					},
+					"name": "CompanyTranslation"
+				},
+				{
+					"dataset": {
+						"referenceName": "200_KTO",
+						"type": "DatasetReference"
+					},
+					"name": "Kto"
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlCompanyBU",
+						"type": "DatasetReference"
+					},
+					"name": "CompanyBU"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "400_Financial_Report",
+						"type": "DatasetReference"
+					},
+					"name": "finrep"
+				}
+			],
+			"transformations": [
+				{
+					"name": "lookupPeriode"
+				},
+				{
+					"name": "KontoErmitteln"
+				},
+				{
+					"name": "SucheCompanyKey"
+				},
+				{
+					"name": "lookupKto"
+				},
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "lookupCompBU"
+				},
+				{
+					"name": "filter3"
+				},
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          GES as string,",
+				"          KTO as string,",
+				"          PERIODE as string,",
+				"          VALUE as double,",
+				"          VERSION as long,",
+				"          KONSEBENE as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> quelle",
+				"source(output(",
+				"          DP_PERIOD_ID as integer,",
+				"          DP_PERIOD as string,",
+				"          DP_START_DATE as date,",
+				"          DP_END_DATE as date",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> periode",
+				"source(output(",
+				"          COMPANY as string,",
+				"          COMPANY_KEY as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> CompanyTranslation",
+				"source(output(",
+				"          WorkspaceID as string,",
+				"          ReportElementID as string,",
+				"          AccountName as string,",
+				"          SourceAccountID as long,",
+				"          ChildIndex as integer,",
+				"          PeriodType as string,",
+				"          BalanceType as string,",
+				"          TransactionTypeCategoryID as long,",
+				"          IsFormula as integer,",
+				"          IsTotalLine as integer,",
+				"          IsTimeSeries as integer,",
+				"          IsSeparatorLine as integer,",
+				"          GeneralLedgerAccount as long,",
+				"          PermittedUsersForAccount as string,",
+				"          AccountLevel1ID as string,",
+				"          AccountLevel1 as string,",
+				"          AccountLevel1CI as integer,",
+				"          AccountLevel2ID as string,",
+				"          AccountLevel2 as string,",
+				"          AccountLevel2CI as integer,",
+				"          AccountLevel3ID as string,",
+				"          AccountLevel3 as string,",
+				"          AccountLevel3CI as integer,",
+				"          AccountLevel4ID as string,",
+				"          AccountLevel4 as string,",
+				"          AccountLevel4CI as integer,",
+				"          AccountLevel5ID as string,",
+				"          AccountLevel5 as string,",
+				"          AccountLevel5CI as integer,",
+				"          AccountLevel6ID as string,",
+				"          AccountLevel6 as string,",
+				"          AccountLevel6CI as integer,",
+				"          AccountLevel7ID as string,",
+				"          AccountLevel7 as string,",
+				"          AccountLevel7CI as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> Kto",
+				"source(output(",
+				"          AccountingOrConsolidationArea as string,",
+				"          OrganisationElementID as long,",
+				"          OrganisationElementName as string,",
+				"          OrganisationElementChildIndex as integer,",
+				"          SourceType as string,",
+				"          ReportingEntityID as long,",
+				"          DefaultTransactionCurrency as string,",
+				"          PermittedUsersForElement as string,",
+				"          OrganisationLevel1ID as string,",
+				"          OrganisationLevel1 as string,",
+				"          OrganisationLevel1CI as integer,",
+				"          OrganisationLevel2ID as string,",
+				"          OrganisationLevel2 as string,",
+				"          OrganisationLevel2CI as integer,",
+				"          OrganisationLevel3ID as string,",
+				"          OrganisationLevel3 as string,",
+				"          OrganisationLevel3CI as integer,",
+				"          OrganisationLevel4ID as string,",
+				"          OrganisationLevel4 as string,",
+				"          OrganisationLevel4CI as integer,",
+				"          OrganisationLevel5ID as string,",
+				"          OrganisationLevel5 as string,",
+				"          OrganisationLevel5CI as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> CompanyBU",
+				"aggregate1, periode lookup(Periode6 == DP_PERIOD,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> lookupPeriode",
+				"filter3 derive(Konto = case(equals(AccountLevel4ID, '2462257') || equals(AccountLevel5ID, '2462442_REF_2461463') || equals(AccountLevel4ID, '2462259') , 'Salary expenses'\r",
+				"    , equals(KTO, '2462345') || equals(KTO, '2462254'), AccountName\r",
+				"    , equals(AccountLevel3ID, '2462256') , AccountLevel3\r",
+				"    , 'kein Konto'\r",
+				"),",
+				"          Gesellschaft = iif ( equals(KONSEBENE, 'Einzelabschluss HB2 adj.'), AccountingOrConsolidationArea, 'ATG' ),",
+				"          BU = iif ( equals(KONSEBENE, 'Einzelabschluss HB2 adj.'), iif( equals(SourceType, 'CostCenter'), OrganisationElementName, toString(null())), toString(null()) ),",
+				"          Actuals = iif(equals(VERSION, 1201), VALUE, toDouble(null())),",
+				"          Budget = iif(equals(VERSION, 2479958), VALUE, toDouble(null())),",
+				"          Periode6 = concat(left(PERIODE, 4), right(PERIODE, 2))) ~> KontoErmitteln",
+				"lookupPeriode, CompanyTranslation lookup(Gesellschaft == COMPANY,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> SucheCompanyKey",
+				"quelle, Kto lookup(KTO == ReportElementID,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> lookupKto",
+				"lookupKto filter(equals(KTO, '2462345') || equals(KTO, '2462254') || equals(AccountLevel3ID, '2462256')  || equals(AccountLevel4ID, '2462257') || equals(AccountLevel5ID, '2462442_REF_2461463') || equals(AccountLevel4ID, '2462259')) ~> filter1",
+				"KontoErmitteln aggregate(groupBy(Gesellschaft,",
+				"          KTO,",
+				"          Periode6,",
+				"          BU,",
+				"          KONSEBENE),",
+				"     ActVal = sum(Actuals),",
+				"          BudVal = sum(Budget)) ~> aggregate1",
+				"filter1, CompanyBU lookup(GES == OrganisationElementName,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> lookupCompBU",
+				"lookupCompBU filter(( equals(KONSEBENE, 'Einzelabschluss HB2 adj.') && !equals(OrganisationElementID, 2477920) ) || ( equals(OrganisationElementID, 2477920) && equals(KONSEBENE, 'Konzern') )) ~> filter3",
+				"SucheCompanyKey derive(Ges = iif(isNull(COMPANY_KEY), Gesellschaft, COMPANY_KEY)) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          FR_PERIOD as string,",
+				"          FR_YEAR as string,",
+				"          FR_MONTH as string,",
+				"          FR_COMPANY as string,",
+				"          FR_BU as string,",
+				"          FR_ACCOUNT as string,",
+				"          FR_VALUE_ACT as decimal(27,4),",
+				"          FR_VALUE_BUDGET as decimal(27,4),",
+				"          FR_PERIODID as integer",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     preSQLs:['truncate table [400_DWH].[F_FINANCIAL_REPORT]'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          FR_PERIOD = Periode6,",
+				"          FR_COMPANY = Ges,",
+				"          FR_ACCOUNT = KTO,",
+				"          FR_VALUE_ACT = ActVal,",
+				"          FR_VALUE_BUDGET = BudVal,",
+				"          FR_PERIODID = DP_PERIOD_ID,",
+				"          FR_BU = BU,",
+				"          FR_YEAR = KONSEBENE",
+				"     )) ~> finrep"
+			]
+		}
+	}
+}

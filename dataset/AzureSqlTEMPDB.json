@@ -1,0 +1,17 @@
+{
+	"name": "AzureSqlTEMPDB",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "HR_REPORT_DB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "TEMPDB"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

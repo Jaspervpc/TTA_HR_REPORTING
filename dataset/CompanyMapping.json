@@ -1,0 +1,40 @@
+{
+	"name": "CompanyMapping",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureHRBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Tabelle1",
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "CompanyMapping.xlsx",
+				"folderPath": "Übersetzungen",
+				"container": "hrreporting"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "Gesellschaft",
+				"type": "String"
+			},
+			{
+				"name": "Kürzel",
+				"type": "String"
+			},
+			{
+				"name": "gültig bis",
+				"type": "String"
+			},
+			{
+				"name": "gültig ab",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

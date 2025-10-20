@@ -1,0 +1,50 @@
+{
+	"name": "200_Companies",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "HR_REPORT_DB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "GES",
+				"type": "nvarchar"
+			},
+			{
+				"name": "GES_BEZ",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PNLSHEET",
+				"type": "nvarchar"
+			},
+			{
+				"name": "GES_MAPPING_CRM",
+				"type": "nvarchar"
+			},
+			{
+				"name": "COMPANY_BU",
+				"type": "nvarchar"
+			},
+			{
+				"name": "GES_MAPPING_CRM_SHORT",
+				"type": "nvarchar"
+			},
+			{
+				"name": "GES_LUCANET",
+				"type": "nvarchar"
+			},
+			{
+				"name": "BRAND_ID",
+				"type": "nchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "200_STG",
+			"table": "D_COMPANIES"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

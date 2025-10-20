@@ -1,0 +1,58 @@
+{
+	"name": "AzureSqlTable4",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "HR_REPORT_DB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "employee_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "attribute_id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "cost_center_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "cost_center_name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "cost_center_weight",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "data_type",
+				"type": "nvarchar"
+			},
+			{
+				"name": "effective_date",
+				"type": "date"
+			},
+			{
+				"name": "entity_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "value",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "200_STG",
+			"table": "Personio_api_data"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,44 @@
+{
+	"name": "200_Financial_Data",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "HR_REPORT_DB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "GES",
+				"type": "nvarchar"
+			},
+			{
+				"name": "KTO",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PERIODE",
+				"type": "varchar"
+			},
+			{
+				"name": "VALUE",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "VERSION",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "KONSEBENE",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "200_STG",
+			"table": "F_FINANCIAL_DATA"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,38 @@
+{
+	"name": "200_TRANSLATIONS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "HR_REPORT_DB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Bereich",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Deutsch",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Deutsch_kurz",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Englisch",
+				"type": "nvarchar"
+			},
+			{
+				"name": "für PowerBi ",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "200_STG",
+			"table": "TRANSLATIONS"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

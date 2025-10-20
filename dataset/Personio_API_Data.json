@@ -1,0 +1,13 @@
+{
+	"name": "Personio_API_Data",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Personio Rest API",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

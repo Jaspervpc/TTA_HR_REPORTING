@@ -1,0 +1,211 @@
+{
+	"name": "400_PERSONELL_BUDGET_unpivot",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "200_PERSONELL_BUDGET_TMP",
+						"type": "DatasetReference"
+					},
+					"name": "Budget200TMP"
+				},
+				{
+					"dataset": {
+						"referenceName": "200_CompanyTranslation",
+						"type": "DatasetReference"
+					},
+					"name": "Ges"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "400_Personell_Budget",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				},
+				{
+					"dataset": {
+						"referenceName": "400_Personell_Budget",
+						"type": "DatasetReference"
+					},
+					"name": "sink3"
+				},
+				{
+					"dataset": {
+						"referenceName": "400_Personell_Budget",
+						"type": "DatasetReference"
+					},
+					"name": "sink4"
+				},
+				{
+					"dataset": {
+						"referenceName": "400_Personell_Budget",
+						"type": "DatasetReference"
+					},
+					"name": "sink5"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "derivedColumn3"
+				},
+				{
+					"name": "derivedColumn4"
+				},
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "filter2"
+				},
+				{
+					"name": "filter3"
+				},
+				{
+					"name": "filter4"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          COMPANY as string,",
+				"          FUNCTION as string,",
+				"          PERIOD as string,",
+				"          Churn as decimal(16,2),",
+				"          Endbestand as decimal(16,2),",
+				"          {New-Joiner} as decimal(16,2),",
+				"          AB as decimal(16,2)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> Budget200TMP",
+				"source(output(",
+				"          COMPANY as string,",
+				"          COMPANY_KEY as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> Ges",
+				"Budget200TMP derive(KPI = \"Churn\") ~> derivedColumn1",
+				"Budget200TMP derive(KPI = \"Endbestand\") ~> derivedColumn2",
+				"Budget200TMP derive(KPI = \"New-Joiner\") ~> derivedColumn3",
+				"Budget200TMP derive(KPI = \"AB\") ~> derivedColumn4",
+				"derivedColumn4 filter(AB != toDecimal(0)) ~> filter1",
+				"derivedColumn3 filter({New-Joiner} != toDecimal(0)) ~> filter2",
+				"derivedColumn2 filter(Endbestand != toDecimal(0)) ~> filter3",
+				"derivedColumn1 filter(Churn != toDecimal(0)) ~> filter4",
+				"filter4 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          COMPANY as string,",
+				"          KPI as string,",
+				"          FUNCTION as string,",
+				"          PERIOD as string,",
+				"          BUDGET_HC as decimal(27,4),",
+				"          BUDGET_FTE as decimal(27,4)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          COMPANY,",
+				"          FUNCTION,",
+				"          PERIOD,",
+				"          KPI,",
+				"          BUDGET_FTE = Churn",
+				"     )) ~> sink2",
+				"filter3 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          COMPANY as string,",
+				"          KPI as string,",
+				"          FUNCTION as string,",
+				"          PERIOD as string,",
+				"          BUDGET_HC as decimal(27,4),",
+				"          BUDGET_FTE as decimal(27,4)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          COMPANY,",
+				"          KPI,",
+				"          FUNCTION,",
+				"          PERIOD,",
+				"          BUDGET_FTE = Endbestand",
+				"     )) ~> sink3",
+				"filter2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          COMPANY as string,",
+				"          KPI as string,",
+				"          FUNCTION as string,",
+				"          PERIOD as string,",
+				"          BUDGET_HC as decimal(27,4),",
+				"          BUDGET_FTE as decimal(27,4)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          COMPANY,",
+				"          KPI,",
+				"          FUNCTION,",
+				"          PERIOD,",
+				"          BUDGET_FTE = {New-Joiner}",
+				"     )) ~> sink4",
+				"filter1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          COMPANY as string,",
+				"          KPI as string,",
+				"          FUNCTION as string,",
+				"          PERIOD as string,",
+				"          BUDGET_HC as decimal(27,4),",
+				"          BUDGET_FTE as decimal(27,4)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          COMPANY,",
+				"          KPI,",
+				"          FUNCTION,",
+				"          PERIOD,",
+				"          BUDGET_FTE = AB",
+				"     )) ~> sink5"
+			]
+		}
+	}
+}

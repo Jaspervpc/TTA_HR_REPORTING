@@ -1,0 +1,58 @@
+{
+	"name": "200_PERSONIO_DATA",
+	"properties": {
+		"activities": [
+			{
+				"name": "200_PERSONIO_DATA",
+				"description": "",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "200_PERSONIO_DATA",
+						"type": "DataFlowReference",
+						"parameters": {
+							"PYear": {
+								"value": "'@{pipeline().parameters.Jahr}'",
+								"type": "Expression"
+							},
+							"PMonth": {
+								"value": "'@{pipeline().parameters.Monat}'",
+								"type": "Expression"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"parameters": {
+			"Jahr": {
+				"type": "string",
+				"defaultValue": "2023"
+			},
+			"Monat": {
+				"type": "string",
+				"defaultValue": "03"
+			}
+		},
+		"folder": {
+			"name": "200_STG"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-04-18T12:17:14Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

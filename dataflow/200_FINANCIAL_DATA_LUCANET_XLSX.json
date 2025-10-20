@@ -1,0 +1,111 @@
+{
+	"name": "200_FINANCIAL_DATA_LUCANET_XLSX",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "FinancialDataLucanetXLSX",
+						"type": "DatasetReference"
+					},
+					"name": "XLSX"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "200_Financial_Data",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "unpivot1"
+				},
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "UpsertInsert"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Gesellschaft as string,",
+				"          Konto as string,",
+				"          {2022-01-31} as double,",
+				"          {2022-02-28} as double,",
+				"          {2022-03-31} as double,",
+				"          {2022-04-30} as double,",
+				"          {2022-05-31} as double,",
+				"          {2022-06-30} as double,",
+				"          {2022-07-31} as double,",
+				"          {2022-08-31} as double,",
+				"          {2022-09-30} as double,",
+				"          {2022-10-31} as double,",
+				"          {2022-11-30} as double,",
+				"          {2022-12-31} as double,",
+				"          {2023-01-31} as double,",
+				"          {2023-02-28} as double,",
+				"          {2023-03-31} as double,",
+				"          {2023-04-30} as double,",
+				"          {2023-05-31} as double,",
+				"          {2023-06-30} as double,",
+				"          {2023-07-31} as double,",
+				"          {2023-08-31} as double,",
+				"          {2023-09-30} as double,",
+				"          {2023-10-31} as double,",
+				"          {2023-11-30} as double,",
+				"          {2023-12-31} as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> XLSX",
+				"XLSX unpivot(output(",
+				"          PERIODE as string,",
+				"          WERT as double",
+				"     ),",
+				"     ungroupBy(Gesellschaft,",
+				"          Konto),",
+				"     lateral: true,",
+				"     ignoreNullPivots: false) ~> unpivot1",
+				"unpivot1 filter(!isNull(Gesellschaft)) ~> filter1",
+				"filter1 derive(Jahr = left(PERIODE, 4),",
+				"          Monat = substring(PERIODE, 6, 2),",
+				"          Perio = concat(left(PERIODE, 4), substring(PERIODE, 6, 2))) ~> derivedColumn1",
+				"derivedColumn1 alterRow(upsertIf(true())) ~> UpsertInsert",
+				"UpsertInsert sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          GES as string,",
+				"          KTO as string,",
+				"          PERIODE as string,",
+				"          VALUE as double,",
+				"          VERSION as long,",
+				"          KONSEBENE as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     keys:['GES','KTO','PERIODE'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          GES = Gesellschaft,",
+				"          KTO = Konto,",
+				"          PERIODE = Perio,",
+				"          VALUE = WERT",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

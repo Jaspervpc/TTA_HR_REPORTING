@@ -1,0 +1,178 @@
+{
+	"name": "Add_NonPersonio_Employees",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "200_Personio_Data",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "200_STG_SML",
+						"type": "DatasetReference"
+					},
+					"name": "MinloadPeriod"
+				},
+				{
+					"dataset": {
+						"referenceName": "200_CompanyTranslation",
+						"type": "DatasetReference"
+					},
+					"name": "CompanyTranslation"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "200_STG_SEE",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "join1"
+				},
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "join2"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          STATUS as string,",
+				"          ID as string,",
+				"          MAILADDRESS as string,",
+				"          FIRSTNAME as string,",
+				"          LASTNAME as string,",
+				"          DEPARTMENT as string,",
+				"          AGE as decimal(27,4),",
+				"          HIRED_AS as string,",
+				"          HIRE_DATE as date,",
+				"          EMPLOYMENT_TYPE as string,",
+				"          EMPLOYEE_GROUPS_BY_FUNCTION as string,",
+				"          EXIT_TYPE as string,",
+				"          EXIT_TYPE_2 as string,",
+				"          LEAVING_DATE_CURRENT_EMPLOYMENT_PERIOD as date,",
+				"          PLACE_OF_BUSINESS as string,",
+				"          LENGTH_OF_EMPLOYMENT_IN_YEARS as decimal(27,4),",
+				"          ENTRY_DATE_CURRENT_EMPLOYMENT_PERIOD as date,",
+				"          END_OF_EMPLOYMENT as date,",
+				"          FIRST_ENTRY_DATE as date,",
+				"          FTE as decimal(27,4),",
+				"          GENDER as string,",
+				"          COMPANY as string,",
+				"          DEGREE_OF_SEVERE_DISABILITY as string,",
+				"          COST_CENTRE as string,",
+				"          TERMINATION_DATE as date,",
+				"          REASON_FOR_TERMINATION as string,",
+				"          NUMBER_OF_EMPLOYEES_STATUS_ACTIVE_AND_TIME_OFF as decimal(27,4),",
+				"          DATEV_PERSONNEL_NUMBER as string,",
+				"          POSITION as string,",
+				"          WEEKLY_HOURS as decimal(27,4),",
+				"          LOAD_PERIOD as string,",
+				"          LOAD_TIME as timestamp,",
+				"          BAD_CHURN as string,",
+				"          ACCIDENT_AT_WORK as string,",
+				"          WORKRELATED_DEATH as string,",
+				"          COMPANY_KEY as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source(output(",
+				"          COMPANY as string,",
+				"          Min_Load_Period as integer,",
+				"          COMPANY_KEY as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> MinloadPeriod",
+				"source(output(",
+				"          COMPANY as string,",
+				"          COMPANY_KEY as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'SELECT  [COMPANY] ,[COMPANY_KEY]\\nfrom [200_STG].[D_COMPANY_TRANSLATION]',",
+				"     format: 'query') ~> CompanyTranslation",
+				"filter1 derive(BAD_CHURN_ADJUSTED = iif( isNull(BAD_CHURN) || BAD_CHURN == \"No\" , \"Ja\", \"Nein\"),",
+				"          COST_CENTRE_INT = toInteger(COST_CENTRE),",
+				"          ID_INT = toInteger(ID)) ~> derivedColumn1",
+				"join2, MinloadPeriod join(CompanyTranslation@COMPANY_KEY == MinloadPeriod@COMPANY_KEY,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 filter(toInteger(LOAD_PERIOD) < Min_Load_Period) ~> filter1",
+				"source1, CompanyTranslation join(source1@COMPANY == CompanyTranslation@COMPANY,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join2",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     recreate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          STATUS,",
+				"          ID = ID_INT,",
+				"          MAILADDRESS,",
+				"          FIRSTNAME,",
+				"          LASTNAME,",
+				"          DEPARTMENT,",
+				"          AGE,",
+				"          HIRED_AS,",
+				"          HIRE_DATE,",
+				"          EMPLOYMENT_TYPE,",
+				"          EMPLOYEE_GROUPS_BY_FUNCTION,",
+				"          EXIT_TYPE,",
+				"          EXIT_TYPE_2,",
+				"          LEAVING_DATE_CURRENT_EMPLOYMENT_PERIOD,",
+				"          PLACE_OF_BUSINESS,",
+				"          LENGTH_OF_EMPLOYMENT_IN_YEARS,",
+				"          ENTRY_DATE_CURRENT_EMPLOYMENT_PERIOD,",
+				"          END_OF_EMPLOYMENT,",
+				"          FIRST_ENTRY_DATE,",
+				"          FTE,",
+				"          GENDER,",
+				"          COMPANY,",
+				"          DEGREE_OF_SEVERE_DISABILITY,",
+				"          COST_CENTRE = COST_CENTRE_INT,",
+				"          TERMINATION_DATE,",
+				"          REASON_FOR_TERMINATION,",
+				"          NUMBER_OF_EMPLOYEES_STATUS_ACTIVE_AND_TIME_OFF,",
+				"          DATEV_PERSONNEL_NUMBER,",
+				"          POSITION,",
+				"          WEEKLY_HOURS,",
+				"          LOAD_PERIOD,",
+				"          LOAD_TIME,",
+				"          BAD_CHURN = BAD_CHURN_ADJUSTED,",
+				"          ACCIDENT_AT_WORK,",
+				"          WORKRELATED_DEATH",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

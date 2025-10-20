@@ -1,0 +1,159 @@
+{
+	"name": "PersonioASCII_bis_202301",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureHRBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "Data_2022_08.csv",
+				"folderPath": "Personio/Schnittstelle_vor_Personio",
+				"container": "hrreporting"
+			},
+			"columnDelimiter": ";",
+			"encodingName": "UTF-8",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Status",
+				"type": "String"
+			},
+			{
+				"name": "ID",
+				"type": "String"
+			},
+			{
+				"name": "E-Mail",
+				"type": "String"
+			},
+			{
+				"name": "Name",
+				"type": "String"
+			},
+			{
+				"name": " Vorname",
+				"type": "String"
+			},
+			{
+				"name": "Abteilung",
+				"type": "String"
+			},
+			{
+				"name": "Alter",
+				"type": "String"
+			},
+			{
+				"name": "Mitarbeitergruppen nach Anstellungsart",
+				"type": "String"
+			},
+			{
+				"name": "Anstellungsdatum",
+				"type": "String"
+			},
+			{
+				"name": "Anstellungsart",
+				"type": "String"
+			},
+			{
+				"name": "Mitarbeitergruppen nach Funktion",
+				"type": "String"
+			},
+			{
+				"name": "Austrittsart11",
+				"type": "String"
+			},
+			{
+				"name": "Austrittsart12",
+				"type": "String"
+			},
+			{
+				"name": "Austrittsdatum (aktueller Beschäftigungszeitraum)",
+				"type": "String"
+			},
+			{
+				"name": "Betriebsstätte",
+				"type": "String"
+			},
+			{
+				"name": "Betriebszugehörigkeit (in Jahren)",
+				"type": "String"
+			},
+			{
+				"name": "Eintrittsdatum (aktueller Beschäftigungszeitraum)",
+				"type": "String"
+			},
+			{
+				"name": "Ende des Arbeitsverhältnisses",
+				"type": "String"
+			},
+			{
+				"name": "Ersteintrittsdatum",
+				"type": "String"
+			},
+			{
+				"name": "FTE",
+				"type": "String"
+			},
+			{
+				"name": "Geschlecht",
+				"type": "String"
+			},
+			{
+				"name": "Gesellschaft",
+				"type": "String"
+			},
+			{
+				"name": "Grad der Schwerbehinderung",
+				"type": "String"
+			},
+			{
+				"name": "Kostenstelle",
+				"type": "String"
+			},
+			{
+				"name": "Kündigung (Datum)",
+				"type": "String"
+			},
+			{
+				"name": "Kündigungsgrund",
+				"type": "String"
+			},
+			{
+				"name": "Mitarbeiterzahl (Status „Aktiv“ und „Auszeit“)",
+				"type": "String"
+			},
+			{
+				"name": "DATEV Personalnummer",
+				"type": "String"
+			},
+			{
+				"name": "Position",
+				"type": "String"
+			},
+			{
+				"name": "Wochenstunden",
+				"type": "String"
+			},
+			{
+				"name": "Bad Churn",
+				"type": "String"
+			},
+			{
+				"name": "Arbeitsunfall",
+				"type": "String"
+			},
+			{
+				"name": "Arbeitsbedingter Todesfall",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

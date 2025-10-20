@@ -1,0 +1,88 @@
+{
+	"name": "DF 100 STG Personio api data",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "JSON_PersonioAPI",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "100_STG_SRAE",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "flatten1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          data as (attributes as (archival_status as string, archived_at as string, author_first_name as string, author_last_name as string, columns as string[], created_at as timestamp, data_refreshed_at as timestamp, description as string, end_date as date, filters as string[], id as string, items as (employee_id as integer, historical_attributes as (attribute_id as string, cost_centers as (cost_center_id as integer, name as string, weight as short)[], data_type as string, effective_date as date, employee_id as integer, entity_id as integer, value as string)[])[], name as string, period_type as string, start_date as date, status as string, type as string, updated_at as string), type as string)[],",
+				"          limit as boolean,",
+				"          metadata as (current_page as boolean, total_elements as short, total_pages as boolean),",
+				"          offset as boolean,",
+				"          success as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     inferDriftedColumnTypes: true,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> source1",
+				"source1 aggregate(data = max(data.attributes.items.historical_attributes)) ~> aggregate1",
+				"aggregate1 foldDown(unroll(data),",
+				"     mapColumn(",
+				"          historical_atributes = data",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten1",
+				"flatten1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          employee_id as integer,",
+				"          attribute_id as string,",
+				"          cost_center_id as integer,",
+				"          cost_center_name as string,",
+				"          cost_center_weight as integer,",
+				"          data_type as string,",
+				"          effective_date as date,",
+				"          entity_id as integer,",
+				"          value as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     recreate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          employee_id = historical_atributes.employee_id,",
+				"          attribute_id = historical_atributes.attribute_id,",
+				"          cost_center_id = historical_atributes.cost_centers[1].cost_center_id,",
+				"          cost_center_name = historical_atributes.cost_centers[1].name,",
+				"          cost_center_weight = historical_atributes.cost_centers[1].weight,",
+				"          data_type = historical_atributes.data_type,",
+				"          effective_date = historical_atributes.effective_date,",
+				"          entity_id = historical_atributes.entity_id,",
+				"          value = historical_atributes.value",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

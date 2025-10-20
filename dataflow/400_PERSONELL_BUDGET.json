@@ -1,0 +1,89 @@
+{
+	"name": "400_PERSONELL_BUDGET",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "200_Personell_Budget",
+						"type": "DatasetReference"
+					},
+					"name": "Budget200"
+				},
+				{
+					"dataset": {
+						"referenceName": "200_CompanyTranslation",
+						"type": "DatasetReference"
+					},
+					"name": "Ges"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "400_Personell_Budget",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "lookupGes"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          COMPANY as string,",
+				"          KPI as string,",
+				"          FUNCTION as string,",
+				"          PERIOD as string,",
+				"          BUDGET_VALUE as decimal(10,0)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> Budget200",
+				"source(output(",
+				"          COMPANY as string,",
+				"          COMPANY_KEY as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> Ges",
+				"Budget200, Ges lookup(Budget200@COMPANY == Ges@COMPANY,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> lookupGes",
+				"lookupGes sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          COMPANY as string,",
+				"          KPI as string,",
+				"          FUNCTION as string,",
+				"          PERIOD as string,",
+				"          BUDGET_HC as decimal(27,4),",
+				"          BUDGET_FTE as decimal(27,4)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          COMPANY = Budget200@COMPANY,",
+				"          KPI,",
+				"          FUNCTION,",
+				"          PERIOD,",
+				"          BUDGET_FTE = BUDGET_VALUE",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

@@ -1,0 +1,174 @@
+{
+	"name": "200_Personio_Data",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "HR_REPORT_DB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "STATUS",
+				"type": "varchar"
+			},
+			{
+				"name": "ID",
+				"type": "varchar"
+			},
+			{
+				"name": "MAILADDRESS",
+				"type": "varchar"
+			},
+			{
+				"name": "FIRSTNAME",
+				"type": "varchar"
+			},
+			{
+				"name": "LASTNAME",
+				"type": "varchar"
+			},
+			{
+				"name": "DEPARTMENT",
+				"type": "varchar"
+			},
+			{
+				"name": "AGE",
+				"type": "decimal",
+				"precision": 27,
+				"scale": 4
+			},
+			{
+				"name": "HIRED_AS",
+				"type": "varchar"
+			},
+			{
+				"name": "HIRE_DATE",
+				"type": "date"
+			},
+			{
+				"name": "EMPLOYMENT_TYPE",
+				"type": "varchar"
+			},
+			{
+				"name": "EMPLOYEE_GROUPS_BY_FUNCTION",
+				"type": "varchar"
+			},
+			{
+				"name": "EXIT_TYPE",
+				"type": "varchar"
+			},
+			{
+				"name": "EXIT_TYPE_2",
+				"type": "varchar"
+			},
+			{
+				"name": "LEAVING_DATE_CURRENT_EMPLOYMENT_PERIOD",
+				"type": "date"
+			},
+			{
+				"name": "PLACE_OF_BUSINESS",
+				"type": "varchar"
+			},
+			{
+				"name": "LENGTH_OF_EMPLOYMENT_IN_YEARS",
+				"type": "decimal",
+				"precision": 27,
+				"scale": 4
+			},
+			{
+				"name": "ENTRY_DATE_CURRENT_EMPLOYMENT_PERIOD",
+				"type": "date"
+			},
+			{
+				"name": "END_OF_EMPLOYMENT",
+				"type": "date"
+			},
+			{
+				"name": "FIRST_ENTRY_DATE",
+				"type": "date"
+			},
+			{
+				"name": "FTE",
+				"type": "decimal",
+				"precision": 27,
+				"scale": 4
+			},
+			{
+				"name": "GENDER",
+				"type": "varchar"
+			},
+			{
+				"name": "COMPANY",
+				"type": "varchar"
+			},
+			{
+				"name": "DEGREE_OF_SEVERE_DISABILITY",
+				"type": "varchar"
+			},
+			{
+				"name": "COST_CENTRE",
+				"type": "varchar"
+			},
+			{
+				"name": "TERMINATION_DATE",
+				"type": "date"
+			},
+			{
+				"name": "REASON_FOR_TERMINATION",
+				"type": "varchar"
+			},
+			{
+				"name": "NUMBER_OF_EMPLOYEES_STATUS_ACTIVE_AND_TIME_OFF",
+				"type": "decimal",
+				"precision": 27,
+				"scale": 4
+			},
+			{
+				"name": "DATEV_PERSONNEL_NUMBER",
+				"type": "varchar"
+			},
+			{
+				"name": "POSITION",
+				"type": "varchar"
+			},
+			{
+				"name": "WEEKLY_HOURS",
+				"type": "decimal",
+				"precision": 27,
+				"scale": 4
+			},
+			{
+				"name": "LOAD_PERIOD",
+				"type": "varchar"
+			},
+			{
+				"name": "LOAD_TIME",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "BAD_CHURN",
+				"type": "varchar"
+			},
+			{
+				"name": "ACCIDENT_AT_WORK",
+				"type": "varchar"
+			},
+			{
+				"name": "WORKRELATED_DEATH",
+				"type": "varchar"
+			},
+			{
+				"name": "COMPANY_KEY",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "200_STG",
+			"table": "F_PERSONIO_DATA"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

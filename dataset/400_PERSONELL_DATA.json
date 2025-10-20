@@ -1,0 +1,233 @@
+{
+	"name": "400_PERSONELL_DATA",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "HR_REPORT_DB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "FPR_PERIOD",
+				"type": "varchar"
+			},
+			{
+				"name": "FPR_PERIOD_ID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "FPR_YEAR",
+				"type": "varchar"
+			},
+			{
+				"name": "FPR_MONTH",
+				"type": "varchar"
+			},
+			{
+				"name": "FPR_GENDER",
+				"type": "varchar"
+			},
+			{
+				"name": "FPR_COMPANY",
+				"type": "varchar"
+			},
+			{
+				"name": "FPR_PLANT",
+				"type": "varchar"
+			},
+			{
+				"name": "FPR_BU",
+				"type": "varchar"
+			},
+			{
+				"name": "FPR_POSITION",
+				"type": "varchar"
+			},
+			{
+				"name": "FPR_PERMANENT_EMPLOYEE",
+				"type": "varchar"
+			},
+			{
+				"name": "FPR_DISABILITY",
+				"type": "varchar"
+			},
+			{
+				"name": "FPR_FUNCTION",
+				"type": "varchar"
+			},
+			{
+				"name": "FPR_OPERATIVE",
+				"type": "varchar"
+			},
+			{
+				"name": "FPR_AGE",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "FPR_TENURE",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "FPR_COSTCENTRE",
+				"type": "varchar"
+			},
+			{
+				"name": "FPR_HC_EMPLOYEES_START_PERIOD",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "FPR_HC_EMPLOYEES_END_PERIOD",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "FPR_HC_NEW_HIRES",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "FPR_HC_LEAVERS",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "FPR_FTE_EMPLOYEES_START_PERIOD",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "FPR_FTE_EMPLOYEES_END_PERIOD",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "FPR_FTE_NEW_HIRES",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "FPR_FTE_LEAVERS",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "FPR_HC_CHURN",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "FPR_BAD_CHURN",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "FPR_PERMANENT_EMPLOYEES_FLAG",
+				"type": "bit"
+			},
+			{
+				"name": "FPR_WORK_REL_INURIES",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "FPR_WORK_REL_FATALITIES",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "FPR_DISABLED_EMPLOYEES_HC",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "FPR_DISABLED_EMPLOYEES_FTE",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "FPR_PERIOD_DATE",
+				"type": "date"
+			},
+			{
+				"name": "FPR_EXIT_TYPE",
+				"type": "varchar"
+			},
+			{
+				"name": "FPR_HC_EMPLOYEES_START_PERIOD_INCL_GROUPCHANGE",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "FPR_FTE_EMPLOYEES_START_PERIOD_INCL_GROUPCHANGE",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "FPR_HC_NEW_HIRES_GROUPCHANGE",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "FPR_HC_LEAVERS_GROUPCHANGE",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "FPR_FTE_NEW_HIRES_GROUPCHANGE",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "FPR_FTE_LEAVERS_GROUPCHANGE",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "FPR_GROUPCHANGE",
+				"type": "bit"
+			},
+			{
+				"name": "FPR_HC_EMPLOYEES_END_PERIOD_INCL_GROUPCHANGE",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "FPR_FTE_EMPLOYEES_END_PERIOD_INCL_GROUPCHANGE",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			}
+		],
+		"typeProperties": {
+			"schema": "400_DWH",
+			"table": "F_PERSONELL_REPORT"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

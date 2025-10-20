@@ -1,0 +1,173 @@
+{
+	"name": "AzureSQL_Account",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabaseLucanet",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "WorkspaceID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ReportElementID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AccountName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "SourceAccountID",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "ChildIndex",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "PeriodType",
+				"type": "nvarchar"
+			},
+			{
+				"name": "BalanceType",
+				"type": "nvarchar"
+			},
+			{
+				"name": "TransactionTypeCategoryID",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "IsFormula",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "IsTotalLine",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "IsTimeSeries",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "IsSeparatorLine",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "GeneralLedgerAccount",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "PermittedUsersForAccount",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AccountLevel1ID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AccountLevel1",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AccountLevel1CI",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "AccountLevel2ID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AccountLevel2",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AccountLevel2CI",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "AccountLevel3ID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AccountLevel3",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AccountLevel3CI",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "AccountLevel4ID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AccountLevel4",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AccountLevel4CI",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "AccountLevel5ID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AccountLevel5",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AccountLevel5CI",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "AccountLevel6ID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AccountLevel6",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AccountLevel6CI",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "AccountLevel7ID",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AccountLevel7",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AccountLevel7CI",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "AccountStructure"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

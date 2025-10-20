@@ -1,0 +1,66 @@
+{
+	"name": "FINREP_FINREPORT",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Azure_FinReport",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "GES",
+				"type": "varchar"
+			},
+			{
+				"name": "KTO",
+				"type": "varchar"
+			},
+			{
+				"name": "JAHR",
+				"type": "varchar"
+			},
+			{
+				"name": "MONAT",
+				"type": "varchar"
+			},
+			{
+				"name": "PERIODE",
+				"type": "varchar"
+			},
+			{
+				"name": "SALDO",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "SALDO_YTD",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "BUDGET",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "BUDGET_YTD",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "KTO_ID",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "F_FINREPORT"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

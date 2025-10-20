@@ -1,0 +1,17 @@
+{
+	"name": "100_STG_PERS_BUDGET_24",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "HR_REPORT_DB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "100_STG",
+			"table": "PERS_BUDGET_24"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

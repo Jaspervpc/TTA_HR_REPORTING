@@ -1,0 +1,35 @@
+{
+	"name": "D_PERIOD",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "HR_REPORT_DB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "DP_PERIOD_ID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "DP_PERIOD",
+				"type": "varchar"
+			},
+			{
+				"name": "DP_START_DATE",
+				"type": "date"
+			},
+			{
+				"name": "DP_END_DATE",
+				"type": "date"
+			}
+		],
+		"typeProperties": {
+			"schema": "400_DWH",
+			"table": "D_PERIOD"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

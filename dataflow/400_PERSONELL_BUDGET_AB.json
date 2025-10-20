@@ -1,0 +1,74 @@
+{
+	"name": "400_PERSONELL_BUDGET_AB",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "400_PERSONELL_DATA",
+						"type": "DatasetReference"
+					},
+					"name": "AB"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "400_Personell_Budget",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "KPIAB"
+				},
+				{
+					"name": "filter1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          FPR_PERIOD as string,",
+				"          FPR_COMPANY as string,",
+				"          FPR_FUNCTION as string,",
+				"          Anfangsbestand as decimal(38,4)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'SELECT [FPR_PERIOD]\\n      ,[FPR_COMPANY]\\n      ,[FPR_FUNCTION]\\n      ,sum([FPR_FTE_EMPLOYEES_START_PERIOD]) as Anfangsbestand\\n  FROM [400_DWH].[F_PERSONELL_REPORT]\\n  group by FPR_PERIOD, FPR_COMPANY, FPR_FUNCTION',",
+				"     format: 'query') ~> AB",
+				"filter1 derive(KPI = \"AB\") ~> KPIAB",
+				"AB filter(right(FPR_PERIOD, 2) ==\"01\") ~> filter1",
+				"KPIAB sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          COMPANY as string,",
+				"          KPI as string,",
+				"          FUNCTION as string,",
+				"          PERIOD as string,",
+				"          BUDGET_HC as decimal(27,4),",
+				"          BUDGET_FTE as decimal(27,4)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          COMPANY = FPR_COMPANY,",
+				"          KPI,",
+				"          FUNCTION = FPR_FUNCTION,",
+				"          PERIOD = FPR_PERIOD,",
+				"          BUDGET_FTE = Anfangsbestand",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

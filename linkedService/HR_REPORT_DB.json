@@ -1,0 +1,12 @@
+{
+	"name": "HR_REPORT_DB",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"connectionString": "integrated security=False;encrypt=True;connection timeout=30;data source=tta-hr-sqlserver.database.windows.net;initial catalog=tta-hr-report;user id=ttahradm",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDFGNDkwNjFBLTMxQTEtNDI3MC1BMzk1LTI1REU5RTk0RjlFOF81MjAzNDA5MC05MTE4LTQ4MDItYmMzYS00NTM2ZmM3Y2M3ZjciDQp9"
+		}
+	}
+}

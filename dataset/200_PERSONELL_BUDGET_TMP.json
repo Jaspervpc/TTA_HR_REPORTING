@@ -1,0 +1,54 @@
+{
+	"name": "200_PERSONELL_BUDGET_TMP",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "HR_REPORT_DB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "COMPANY",
+				"type": "nvarchar"
+			},
+			{
+				"name": "FUNCTION",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PERIOD",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Churn",
+				"type": "decimal",
+				"precision": 16,
+				"scale": 2
+			},
+			{
+				"name": "Endbestand",
+				"type": "decimal",
+				"precision": 16,
+				"scale": 2
+			},
+			{
+				"name": "New-Joiner",
+				"type": "decimal",
+				"precision": 16,
+				"scale": 2
+			},
+			{
+				"name": "AB",
+				"type": "decimal",
+				"precision": 16,
+				"scale": 2
+			}
+		],
+		"typeProperties": {
+			"schema": "200_STG",
+			"table": "F_PERSONELL_BUDGET_TMP"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

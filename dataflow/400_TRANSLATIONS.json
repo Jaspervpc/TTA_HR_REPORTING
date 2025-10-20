@@ -1,0 +1,73 @@
+{
+	"name": "400_TRANSLATIONS",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "200_TRANSLATIONS",
+						"type": "DatasetReference"
+					},
+					"name": "quelleUebersetzungen"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "400_TRANSLATION",
+						"type": "DatasetReference"
+					},
+					"name": "zielUEbersetzungen"
+				}
+			],
+			"transformations": [
+				{
+					"name": "unpivot"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Bereich as string,",
+				"          Deutsch as string,",
+				"          Deutsch_kurz as string,",
+				"          Englisch as string,",
+				"          {für PowerBi } as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> quelleUebersetzungen",
+				"quelleUebersetzungen unpivot(output(",
+				"          QuellFeld as string,",
+				"          Quellwert as string",
+				"     ),",
+				"     ungroupBy(Bereich,",
+				"          {für PowerBi }),",
+				"     lateral: false,",
+				"     ignoreNullPivots: true) ~> unpivot",
+				"unpivot sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          DATAAREA as string,",
+				"          SRC_VALUE as string,",
+				"          TRANSLATION as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          DATAAREA = Bereich,",
+				"          SRC_VALUE = Quellwert,",
+				"          TRANSLATION = {für PowerBi }",
+				"     )) ~> zielUEbersetzungen"
+			]
+		}
+	}
+}
