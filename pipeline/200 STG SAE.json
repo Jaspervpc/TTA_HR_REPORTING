@@ -56,7 +56,7 @@
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
-						"activity": "Clean incomplete periods",
+						"activity": "transform-employee-md",
 						"dependencyConditions": [
 							"Succeeded"
 						]
