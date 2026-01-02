@@ -231,7 +231,8 @@
 				"          ExitType,",
 				"          GroupChange,",
 				"          ID = SEM_ID,",
-				"          SID = SEM_SID),",
+				"          SID = SEM_SID,",
+				"          SEM_MAILADDRESS),",
 				"     StartCountEmployees = sum(AktiveMA),",
 				"          EndCountEmployeesInclGroupChange = sum(AktiveMAInclGroupChange),",
 				"          EndCountFTEInclGroupChange = sum(FTEEmployeesEndInclGroupChange),",
@@ -450,7 +451,8 @@
 				"          FPR_FTE_LEAVERS_GROUPCHANGE = FTELeaversGroupChange,",
 				"          FPR_FTE_LEAVERS_ONLY_GROUPCHANGE = FTELeaversOnlyGroupChange,",
 				"          SID,",
-				"          ID",
+				"          ID,",
+				"          MAILADDRESS = SEM_MAILADDRESS",
 				"     )) ~> PersonellData"
 			]
 		}
