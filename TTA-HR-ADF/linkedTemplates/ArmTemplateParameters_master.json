@@ -1,0 +1,51 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "TTA-HR-ADF"
+		},
+		"AzureDatabricks HR Reporting_accessToken": {
+			"value": ""
+		},
+		"AzureHRBlobStorage_connectionString": {
+			"value": ""
+		},
+		"AzureSqlDatabaseLucanet_connectionString": {
+			"value": ""
+		},
+		"Azure_FinReport_connectionString": {
+			"value": ""
+		},
+		"HR_REPORT_DB_connectionString": {
+			"value": ""
+		},
+		"Sharepoint_password": {
+			"value": ""
+		},
+		"temd_functionKey": {
+			"value": ""
+		},
+		"Personio Rest API_properties_typeProperties_url": {
+			"value": "https://api.personio.de/v1/company/custom-reports/reports/86a27088-ef39-4cc2-8a25-f967f6f62eea"
+		},
+		"RestService_StandardApi_properties_typeProperties_url": {
+			"value": "https://api.personio.de/v1/company/employees"
+		},
+		"Sharepoint_properties_typeProperties_url": {
+			"value": "https://timetoactgroup.sharepoint.com/:f:/r/sites/TTG-PowerBIReporting/Shared%20Documents/HR%20Reporting/Historische%20Daten%20aus%20altem%20Reporting/Finale%20Dateien%20zum%20Upload%20in%20PowerBI?csf=1&web=1&e=bRKzhf"
+		},
+		"Sharepoint_properties_typeProperties_userName": {
+			"value": "markus.wittmer@timetoact.de"
+		},
+		"temd_properties_typeProperties_functionAppUrl": {
+			"value": "https://transform-employee-md.azurewebsites.net/api/run_script_emp?"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}

@@ -1,0 +1,1181 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "TTA-HR-ADF"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/200_STG_SAE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "HR_REPORT_DB",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Datasets - PERSONIO API DATA"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "200_STG",
+					"table": "SAE_API_EMPLOYEES"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/200_STG_SEE')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "HR_REPORT_DB",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "200_STG",
+					"table": "SEE_EXCELEMPLOYEE"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/200_STG_SEM')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "HR_REPORT_DB",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "SEM_ID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SEM_SID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SEM_VALID_FROM",
+						"type": "date"
+					},
+					{
+						"name": "SEM_VALID_TO",
+						"type": "date"
+					},
+					{
+						"name": "SEM_COST_CENTRE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SEM_COST_CENTER_NAME",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SEM_COST_CENTER_WEIGHT",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "SEM_DEPARTMENT",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SEM_FIRST_ENTRY_DATE",
+						"type": "date"
+					},
+					{
+						"name": "SEM_ENTRY_DATE_CURRENT_EMPLOYMENT_PERIOD",
+						"type": "date"
+					},
+					{
+						"name": "SEM_LEAVING_DATE_CURRENT_EMPLOYMENT_PERIOD",
+						"type": "date"
+					},
+					{
+						"name": "SEM_HIRED_AS",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SEM_EMPLOYEE_GROUPS_BY_FUNCTION",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SEM_MAILADDRESS",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SEM_FTE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SEM_GENDER",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SEM_POSITION",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SEM_COMPANY",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SEM_EXIT_TYPE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SEM_WEEKLY_HOURS",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SEM_UPLOAD_DATE",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "SEM_FIRSTNAME",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SEM_LASTNAME",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SEM_PLACE_OF_BUSINESS",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SEM_DEGREE_OF_SEVERE_DISABILITY",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SEM_DATE_OF_BIRTH",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SEM_BAD_CHURN",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SEM_LOAD_PERIOD",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SEM_AGE",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "SEM_TENURE",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "SEM_START_ACCIDENT_DATE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SEM_COMPANY_KEY",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "200_STG",
+					"table": "SEM_EMPLOYEES_MERGED"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/200_STG_SML')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "HR_REPORT_DB",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "200_STG",
+					"table": "SML_MINLOADPERSONIO"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/200_TRANSLATIONS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "HR_REPORT_DB",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "Bereich",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Deutsch",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Deutsch_kurz",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Englisch",
+						"type": "nvarchar"
+					},
+					{
+						"name": "für PowerBi ",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "200_STG",
+					"table": "TRANSLATIONS"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/400_Companies')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "HR_REPORT_DB",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "GES",
+						"type": "nvarchar"
+					},
+					{
+						"name": "GES_BEZ",
+						"type": "nvarchar"
+					},
+					{
+						"name": "GES_MAPPING_CRM",
+						"type": "nvarchar"
+					},
+					{
+						"name": "COMPANY_BU",
+						"type": "nvarchar"
+					},
+					{
+						"name": "GES_MAPPING_CRM_SHORT",
+						"type": "nvarchar"
+					},
+					{
+						"name": "GES_LUCANET",
+						"type": "nvarchar"
+					},
+					{
+						"name": "BRAND_ID",
+						"type": "nchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "400_DWH",
+					"table": "D_COMPANIES"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/400_DWH_FAP')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "HR_REPORT_DB",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Datasets - PERSONIO API DATA"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "400_DWH",
+					"table": "FAP_PERSONELL_REPORT"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/400_Financial_Report')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "HR_REPORT_DB",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "FR_PERIOD",
+						"type": "varchar"
+					},
+					{
+						"name": "FR_YEAR",
+						"type": "varchar"
+					},
+					{
+						"name": "FR_MONTH",
+						"type": "varchar"
+					},
+					{
+						"name": "FR_COMPANY",
+						"type": "varchar"
+					},
+					{
+						"name": "FR_BU",
+						"type": "varchar"
+					},
+					{
+						"name": "FR_ACCOUNT",
+						"type": "varchar"
+					},
+					{
+						"name": "FR_VALUE_ACT",
+						"type": "decimal",
+						"precision": 27,
+						"scale": 4
+					},
+					{
+						"name": "FR_VALUE_BUDGET",
+						"type": "decimal",
+						"precision": 27,
+						"scale": 4
+					},
+					{
+						"name": "FR_PERIODID",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "400_DWH",
+					"table": "F_FINANCIAL_REPORT"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/400_PERSONELL_DATA')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "HR_REPORT_DB",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "FPR_PERIOD",
+						"type": "varchar"
+					},
+					{
+						"name": "FPR_PERIOD_ID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "FPR_YEAR",
+						"type": "varchar"
+					},
+					{
+						"name": "FPR_MONTH",
+						"type": "varchar"
+					},
+					{
+						"name": "FPR_GENDER",
+						"type": "varchar"
+					},
+					{
+						"name": "FPR_COMPANY",
+						"type": "varchar"
+					},
+					{
+						"name": "FPR_PLANT",
+						"type": "varchar"
+					},
+					{
+						"name": "FPR_BU",
+						"type": "varchar"
+					},
+					{
+						"name": "FPR_POSITION",
+						"type": "varchar"
+					},
+					{
+						"name": "FPR_PERMANENT_EMPLOYEE",
+						"type": "varchar"
+					},
+					{
+						"name": "FPR_DISABILITY",
+						"type": "varchar"
+					},
+					{
+						"name": "FPR_FUNCTION",
+						"type": "varchar"
+					},
+					{
+						"name": "FPR_OPERATIVE",
+						"type": "varchar"
+					},
+					{
+						"name": "FPR_AGE",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "FPR_TENURE",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "FPR_COSTCENTRE",
+						"type": "varchar"
+					},
+					{
+						"name": "FPR_HC_EMPLOYEES_START_PERIOD",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "FPR_HC_EMPLOYEES_END_PERIOD",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "FPR_HC_NEW_HIRES",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "FPR_HC_LEAVERS",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "FPR_FTE_EMPLOYEES_START_PERIOD",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "FPR_FTE_EMPLOYEES_END_PERIOD",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "FPR_FTE_NEW_HIRES",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "FPR_FTE_LEAVERS",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "FPR_HC_CHURN",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "FPR_BAD_CHURN",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "FPR_PERMANENT_EMPLOYEES_FLAG",
+						"type": "bit"
+					},
+					{
+						"name": "FPR_WORK_REL_INURIES",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "FPR_WORK_REL_FATALITIES",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "FPR_DISABLED_EMPLOYEES_HC",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "FPR_DISABLED_EMPLOYEES_FTE",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "FPR_PERIOD_DATE",
+						"type": "date"
+					},
+					{
+						"name": "FPR_EXIT_TYPE",
+						"type": "varchar"
+					},
+					{
+						"name": "FPR_HC_EMPLOYEES_START_PERIOD_INCL_GROUPCHANGE",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "FPR_FTE_EMPLOYEES_START_PERIOD_INCL_GROUPCHANGE",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "FPR_HC_NEW_HIRES_GROUPCHANGE",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "FPR_HC_LEAVERS_GROUPCHANGE",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "FPR_FTE_NEW_HIRES_GROUPCHANGE",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "FPR_FTE_LEAVERS_GROUPCHANGE",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "FPR_GROUPCHANGE",
+						"type": "bit"
+					},
+					{
+						"name": "FPR_HC_EMPLOYEES_END_PERIOD_INCL_GROUPCHANGE",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "FPR_FTE_EMPLOYEES_END_PERIOD_INCL_GROUPCHANGE",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					}
+				],
+				"typeProperties": {
+					"schema": "400_DWH",
+					"table": "F_PERSONELL_REPORT"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/400_Personell_Budget')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "HR_REPORT_DB",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "COMPANY",
+						"type": "nvarchar"
+					},
+					{
+						"name": "KPI",
+						"type": "nvarchar"
+					},
+					{
+						"name": "FUNCTION",
+						"type": "nvarchar"
+					},
+					{
+						"name": "PERIOD",
+						"type": "nvarchar"
+					},
+					{
+						"name": "BUDGET_HC",
+						"type": "decimal",
+						"precision": 27,
+						"scale": 4
+					},
+					{
+						"name": "BUDGET_FTE",
+						"type": "decimal",
+						"precision": 27,
+						"scale": 4
+					}
+				],
+				"typeProperties": {
+					"schema": "400_DWH",
+					"table": "F_PERSONELL_BUDGET"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/400_TRANSLATION')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "HR_REPORT_DB",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "DATAAREA",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SRC_VALUE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TRANSLATION",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "400_DWH",
+					"table": "TRANSLATIONS"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSQL_Account')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabaseLucanet",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "WorkspaceID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ReportElementID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "AccountName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SourceAccountID",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "ChildIndex",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "PeriodType",
+						"type": "nvarchar"
+					},
+					{
+						"name": "BalanceType",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TransactionTypeCategoryID",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "IsFormula",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "IsTotalLine",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "IsTimeSeries",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "IsSeparatorLine",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "GeneralLedgerAccount",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "PermittedUsersForAccount",
+						"type": "nvarchar"
+					},
+					{
+						"name": "AccountLevel1ID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "AccountLevel1",
+						"type": "nvarchar"
+					},
+					{
+						"name": "AccountLevel1CI",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "AccountLevel2ID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "AccountLevel2",
+						"type": "nvarchar"
+					},
+					{
+						"name": "AccountLevel2CI",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "AccountLevel3ID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "AccountLevel3",
+						"type": "nvarchar"
+					},
+					{
+						"name": "AccountLevel3CI",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "AccountLevel4ID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "AccountLevel4",
+						"type": "nvarchar"
+					},
+					{
+						"name": "AccountLevel4CI",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "AccountLevel5ID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "AccountLevel5",
+						"type": "nvarchar"
+					},
+					{
+						"name": "AccountLevel5CI",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "AccountLevel6ID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "AccountLevel6",
+						"type": "nvarchar"
+					},
+					{
+						"name": "AccountLevel6CI",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "AccountLevel7ID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "AccountLevel7",
+						"type": "nvarchar"
+					},
+					{
+						"name": "AccountLevel7CI",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "AccountStructure"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlAccount')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "HR_REPORT_DB",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "200_STG",
+					"table": "D_FINANCIAL_ACCOUNTS"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlCompanyBU')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "HR_REPORT_DB",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "200_STG",
+					"table": "D_COMPANY_BU"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlLucanetCompanies')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabaseLucanet",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "AccountingOrConsolidationArea",
+						"type": "nvarchar"
+					},
+					{
+						"name": "OrganisationElementID",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "OrganisationElementName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "OrganisationElementChildIndex",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "SourceType",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ReportingEntityID",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "DefaultTransactionCurrency",
+						"type": "nvarchar"
+					},
+					{
+						"name": "PermittedUsersForElement",
+						"type": "nvarchar"
+					},
+					{
+						"name": "OrganisationLevel1ID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "OrganisationLevel1",
+						"type": "nvarchar"
+					},
+					{
+						"name": "OrganisationLevel1CI",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "OrganisationLevel2ID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "OrganisationLevel2",
+						"type": "nvarchar"
+					},
+					{
+						"name": "OrganisationLevel2CI",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "OrganisationLevel3ID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "OrganisationLevel3",
+						"type": "nvarchar"
+					},
+					{
+						"name": "OrganisationLevel3CI",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "OrganisationLevel4ID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "OrganisationLevel4",
+						"type": "nvarchar"
+					},
+					{
+						"name": "OrganisationLevel4CI",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "OrganisationLevel5ID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "OrganisationLevel5",
+						"type": "nvarchar"
+					},
+					{
+						"name": "OrganisationLevel5CI",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "OrganisationStructure"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTEMPDB')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "HR_REPORT_DB",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "TEMPDB"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "HR_REPORT_DB",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "TEST",
+					"table": "FEB_PERSONELL_REPORT"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable3')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "HR_REPORT_DB",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable4')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "HR_REPORT_DB",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "employee_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "attribute_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "cost_center_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "cost_center_name",
+						"type": "nvarchar"
+					},
+					{
+						"name": "cost_center_weight",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "data_type",
+						"type": "nvarchar"
+					},
+					{
+						"name": "effective_date",
+						"type": "date"
+					},
+					{
+						"name": "entity_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "value",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "200_STG",
+					"table": "Personio_api_data"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable5')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "HR_REPORT_DB",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "150_STG",
+					"table": "PERSONIO_API"
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}

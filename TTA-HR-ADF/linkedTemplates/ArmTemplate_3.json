@@ -1,0 +1,3914 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "TTA-HR-ADF"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/Personio_API_Data')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Personio Rest API",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RestResource_StandardApi')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "RestService_StandardApi",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SharepointCSV')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Sharepoint",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "HttpServerLocation",
+						"relativeUrl": "/Data_2023_06.csv"
+					},
+					"columnDelimiter": ";",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/200_COMPANIES')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy Companies",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"preCopyScript": "truncate table [200_STG].[D_COMPANIES]",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"tableOption": "autoCreate",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "GES",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "GES",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "GES_BEZ",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "GES_BEZ",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "PNLSHEET",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "PNLSHEET",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "GES_MAPPING_CRM",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "GES_MAPPING_CRM",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "COMPANY_BU",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "COMPANY_BU",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "GES_MAPPING_CRM_SHORT",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "GES_MAPPING_CRM_SHORT",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "GES_LUCANET",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "GES_LUCANET",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "BRAND_ID",
+											"type": "String",
+											"physicalType": "nchar"
+										},
+										"sink": {
+											"name": "BRAND_ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "FinRepCompanies",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "200_Companies",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "200_STG"
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-04-13T06:25:43Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/200_COMPANIES_TRANSLATIONS')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy company translations",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ExcelSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"preCopyScript": "truncate table [200_STG].[D_COMPANY_TRANSLATION]",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "Gesellschaft",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "COMPANY",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Kürzel",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "COMPANY_KEY",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "gültig bis",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "VALID_FROM",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "gültig ab",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "VALID_TO",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "CompanyMapping",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "200_CompanyTranslation",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "200_STG"
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-11-03T14:29:19Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/200_FINANCIAL_DATA')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy Financial Data",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"preCopyScript": "truncate table [200_STG].[F_FINANCIAL_DATA]",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "GES",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "GES",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "KTO",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "KTO",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "JAHR",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "JAHR",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "MONAT",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "MONAT",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "PERIODE",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "PERIODE",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "SALDO",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 4,
+											"precision": 18
+										},
+										"sink": {
+											"name": "VALUE_ACT",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 4,
+											"precision": 18
+										}
+									},
+									{
+										"source": {
+											"name": "BUDGET",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 4,
+											"precision": 18
+										},
+										"sink": {
+											"name": "VALUE_BUDGET",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 4,
+											"precision": 18
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "FINREP_FINREPORT",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "200_Financial_Data",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "200_STG"
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-07-19T10:26:16Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/200_FINANCIAL_DATA_LUCANET')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy Data",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"preCopyScript": "truncate table [200_STG].[F_FINANCIAL_DATA]",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "OrganisationElementName",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "GES",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "ReportElementID",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "KTO",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "PeriodID",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "PERIODE",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Value",
+											"type": "Double",
+											"physicalType": "float"
+										},
+										"sink": {
+											"name": "VALUE",
+											"type": "Double",
+											"physicalType": "float"
+										}
+									},
+									{
+										"source": {
+											"name": "DataLevelID",
+											"type": "Int64",
+											"physicalType": "bigint"
+										},
+										"sink": {
+											"name": "VERSION",
+											"type": "Int64",
+											"physicalType": "bigint"
+										}
+									},
+									{
+										"source": {
+											"name": "AdjustmentLevelName",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "KONSEBENE",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "LucanetSQL_Data",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "200_Financial_Data",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Copy Account",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"preCopyScript": "TRUNCATE TABLE [200_STG].[D_FINANCIAL_ACCOUNTS]",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "WorkspaceID",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "WorkspaceID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ReportElementID",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "ReportElementID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "AccountName",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "AccountName",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "SourceAccountID",
+											"type": "Int64",
+											"physicalType": "bigint"
+										},
+										"sink": {
+											"name": "SourceAccountID",
+											"type": "Int64",
+											"physicalType": "Int64"
+										}
+									},
+									{
+										"source": {
+											"name": "ChildIndex",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "ChildIndex",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "PeriodType",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "PeriodType",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "BalanceType",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "BalanceType",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TransactionTypeCategoryID",
+											"type": "Int64",
+											"physicalType": "bigint"
+										},
+										"sink": {
+											"name": "TransactionTypeCategoryID",
+											"type": "Int64",
+											"physicalType": "Int64"
+										}
+									},
+									{
+										"source": {
+											"name": "IsFormula",
+											"type": "Int16",
+											"physicalType": "smallint"
+										},
+										"sink": {
+											"name": "IsFormula",
+											"type": "Int16",
+											"physicalType": "Int16"
+										}
+									},
+									{
+										"source": {
+											"name": "IsTotalLine",
+											"type": "Int16",
+											"physicalType": "smallint"
+										},
+										"sink": {
+											"name": "IsTotalLine",
+											"type": "Int16",
+											"physicalType": "Int16"
+										}
+									},
+									{
+										"source": {
+											"name": "IsTimeSeries",
+											"type": "Int16",
+											"physicalType": "smallint"
+										},
+										"sink": {
+											"name": "IsTimeSeries",
+											"type": "Int16",
+											"physicalType": "Int16"
+										}
+									},
+									{
+										"source": {
+											"name": "IsSeparatorLine",
+											"type": "Int16",
+											"physicalType": "smallint"
+										},
+										"sink": {
+											"name": "IsSeparatorLine",
+											"type": "Int16",
+											"physicalType": "Int16"
+										}
+									},
+									{
+										"source": {
+											"name": "GeneralLedgerAccount",
+											"type": "Int64",
+											"physicalType": "bigint"
+										},
+										"sink": {
+											"name": "GeneralLedgerAccount",
+											"type": "Int64",
+											"physicalType": "Int64"
+										}
+									},
+									{
+										"source": {
+											"name": "PermittedUsersForAccount",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "PermittedUsersForAccount",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "AccountLevel1ID",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "AccountLevel1ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "AccountLevel1",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "AccountLevel1",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "AccountLevel1CI",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "AccountLevel1CI",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "AccountLevel2ID",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "AccountLevel2ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "AccountLevel2",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "AccountLevel2",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "AccountLevel2CI",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "AccountLevel2CI",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "AccountLevel3ID",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "AccountLevel3ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "AccountLevel3",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "AccountLevel3",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "AccountLevel3CI",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "AccountLevel3CI",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "AccountLevel4ID",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "AccountLevel4ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "AccountLevel4",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "AccountLevel4",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "AccountLevel4CI",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "AccountLevel4CI",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "AccountLevel5ID",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "AccountLevel5ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "AccountLevel5",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "AccountLevel5",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "AccountLevel5CI",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "AccountLevel5CI",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "AccountLevel6ID",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "AccountLevel6ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "AccountLevel6",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "AccountLevel6",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "AccountLevel6CI",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "AccountLevel6CI",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "AccountLevel7ID",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "AccountLevel7ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "AccountLevel7",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "AccountLevel7",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "AccountLevel7CI",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "AccountLevel7CI",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "AzureSQL_Account",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "AzureSqlAccount",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Copy Companies",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"preCopyScript": "TRUNCATE TABLE [200_STG].[D_COMPANY_BU]",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "AccountingOrConsolidationArea",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "AccountingOrConsolidationArea",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "OrganisationElementID",
+											"type": "Int64",
+											"physicalType": "bigint"
+										},
+										"sink": {
+											"name": "OrganisationElementID",
+											"type": "Int64",
+											"physicalType": "Int64"
+										}
+									},
+									{
+										"source": {
+											"name": "OrganisationElementName",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "OrganisationElementName",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "OrganisationElementChildIndex",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "OrganisationElementChildIndex",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "SourceType",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "SourceType",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ReportingEntityID",
+											"type": "Int64",
+											"physicalType": "bigint"
+										},
+										"sink": {
+											"name": "ReportingEntityID",
+											"type": "Int64",
+											"physicalType": "Int64"
+										}
+									},
+									{
+										"source": {
+											"name": "DefaultTransactionCurrency",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "DefaultTransactionCurrency",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "PermittedUsersForElement",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "PermittedUsersForElement",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "OrganisationLevel1ID",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "OrganisationLevel1ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "OrganisationLevel1",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "OrganisationLevel1",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "OrganisationLevel1CI",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "OrganisationLevel1CI",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "OrganisationLevel2ID",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "OrganisationLevel2ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "OrganisationLevel2",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "OrganisationLevel2",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "OrganisationLevel2CI",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "OrganisationLevel2CI",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "OrganisationLevel3ID",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "OrganisationLevel3ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "OrganisationLevel3",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "OrganisationLevel3",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "OrganisationLevel3CI",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "OrganisationLevel3CI",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "OrganisationLevel4ID",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "OrganisationLevel4ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "OrganisationLevel4",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "OrganisationLevel4",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "OrganisationLevel4CI",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "OrganisationLevel4CI",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "OrganisationLevel5ID",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "OrganisationLevel5ID",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "OrganisationLevel5",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "OrganisationLevel5",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "OrganisationLevel5CI",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "OrganisationLevel5CI",
+											"type": "Int32",
+											"physicalType": "Int32"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "AzureSqlLucanetCompanies",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "AzureSqlCompanyBU",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "200_STG"
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-07-19T10:26:16Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/200_TRANSLATIONS')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "200_TRANSLATIONS",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ExcelSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"preCopyScript": "truncate table [200_STG].[TRANSLATIONS]",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "Bereich",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Bereich",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Deutsch",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Deutsch",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Deutsch_kurz",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Deutsch_kurz",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Englisch",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Englisch",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "für PowerBi ",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "für PowerBi ",
+											"type": "String",
+											"physicalType": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Excel_Translations",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "200_TRANSLATIONS",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "200_STG"
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-05-11T07:43:58Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/400_COMPANIES')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy data Companies",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"preCopyScript": "truncate table [400_DWH].[D_COMPANIES]",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "GES",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "GES",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "GES_BEZ",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "GES_BEZ",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "GES_MAPPING_CRM",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "GES_MAPPING_CRM",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "COMPANY_BU",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "COMPANY_BU",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "GES_MAPPING_CRM_SHORT",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "GES_MAPPING_CRM_SHORT",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "GES_LUCANET",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "GES_LUCANET",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "BRAND_ID",
+											"type": "String",
+											"physicalType": "nchar"
+										},
+										"sink": {
+											"name": "BRAND_ID",
+											"type": "String",
+											"physicalType": "nchar"
+										}
+									},
+									{
+										"source": {
+											"name": "GES_SUBGROUP",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "GES_SUBGROUP",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "GES_LEGAL_ENTITY",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "GES_LEGAL_ENTITY",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "200_Companies",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "400_Companies",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "400_DWH"
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-04-24T12:03:12Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/200_FINANCIAL_DATA_LUCANET_XLSX')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "FinancialDataLucanetXLSX",
+								"type": "DatasetReference"
+							},
+							"name": "XLSX"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "200_Financial_Data",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "unpivot1"
+						},
+						{
+							"name": "filter1"
+						},
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "UpsertInsert"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          Gesellschaft as string,",
+						"          Konto as string,",
+						"          {2022-01-31} as double,",
+						"          {2022-02-28} as double,",
+						"          {2022-03-31} as double,",
+						"          {2022-04-30} as double,",
+						"          {2022-05-31} as double,",
+						"          {2022-06-30} as double,",
+						"          {2022-07-31} as double,",
+						"          {2022-08-31} as double,",
+						"          {2022-09-30} as double,",
+						"          {2022-10-31} as double,",
+						"          {2022-11-30} as double,",
+						"          {2022-12-31} as double,",
+						"          {2023-01-31} as double,",
+						"          {2023-02-28} as double,",
+						"          {2023-03-31} as double,",
+						"          {2023-04-30} as double,",
+						"          {2023-05-31} as double,",
+						"          {2023-06-30} as double,",
+						"          {2023-07-31} as double,",
+						"          {2023-08-31} as double,",
+						"          {2023-09-30} as double,",
+						"          {2023-10-31} as double,",
+						"          {2023-11-30} as double,",
+						"          {2023-12-31} as double",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> XLSX",
+						"XLSX unpivot(output(",
+						"          PERIODE as string,",
+						"          WERT as double",
+						"     ),",
+						"     ungroupBy(Gesellschaft,",
+						"          Konto),",
+						"     lateral: true,",
+						"     ignoreNullPivots: false) ~> unpivot1",
+						"unpivot1 filter(!isNull(Gesellschaft)) ~> filter1",
+						"filter1 derive(Jahr = left(PERIODE, 4),",
+						"          Monat = substring(PERIODE, 6, 2),",
+						"          Perio = concat(left(PERIODE, 4), substring(PERIODE, 6, 2))) ~> derivedColumn1",
+						"derivedColumn1 alterRow(upsertIf(true())) ~> UpsertInsert",
+						"UpsertInsert sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          GES as string,",
+						"          KTO as string,",
+						"          PERIODE as string,",
+						"          VALUE as double,",
+						"          VERSION as long,",
+						"          KONSEBENE as string",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     keys:['GES','KTO','PERIODE'],",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          GES = Gesellschaft,",
+						"          KTO = Konto,",
+						"          PERIODE = Perio,",
+						"          VALUE = WERT",
+						"     )) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/200_PERSONELL_BUDGET')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "CSV_BUDGET_NET_NEW_HIRES24",
+								"type": "DatasetReference"
+							},
+							"name": "CSV"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "100_STG_PERS_BUDGET_24",
+								"type": "DatasetReference"
+							},
+							"name": "personellbudget"
+						}
+					],
+					"transformations": [
+						{
+							"name": "FilterLeerzeile"
+						},
+						{
+							"name": "unpivotPerioden"
+						},
+						{
+							"name": "derivedColumn2"
+						},
+						{
+							"name": "derivedColumn3"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          Gesellschaft as string,",
+						"          Kennzahl as string,",
+						"          Funktionsgruppe as string,",
+						"          {01.01.2024} as string,",
+						"          {01.02.2024} as string,",
+						"          {01.03.2024} as string,",
+						"          {01.04.2024} as string,",
+						"          {01.05.2024} as string,",
+						"          {01.06.2024} as string,",
+						"          {01.07.2024} as string,",
+						"          {01.08.2024} as string,",
+						"          {01.09.2024} as string,",
+						"          {01.10.2024} as string,",
+						"          {01.11.2024} as string,",
+						"          {01.12.2024} as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     preferredFractionalType: 'decimal') ~> CSV",
+						"CSV filter(Gesellschaft != \"\") ~> FilterLeerzeile",
+						"FilterLeerzeile unpivot(output(",
+						"          Periode as string,",
+						"          Wert as string",
+						"     ),",
+						"     ungroupBy(Gesellschaft,",
+						"          Kennzahl,",
+						"          Funktionsgruppe),",
+						"     lateral: false,",
+						"     ignoreNullPivots: false) ~> unpivotPerioden",
+						"unpivotPerioden derive(WertN = replace(Wert, ',', '.')) ~> derivedColumn2",
+						"derivedColumn2 derive(WertN2 = toDecimal(WertN)) ~> derivedColumn3",
+						"derivedColumn3 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     recreate:true,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          COMPANY = Gesellschaft,",
+						"          KPI = Kennzahl,",
+						"          FUNCTION = Funktionsgruppe,",
+						"          PERIOD = Periode,",
+						"          BUDGET = WertN2",
+						"     )) ~> personellbudget"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/200_PERSONIO_DATA')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "PersonioASCII",
+								"type": "DatasetReference"
+							},
+							"name": "PersonioASCII",
+							"description": "Daten aus PersonioASCII importieren"
+						},
+						{
+							"dataset": {
+								"referenceName": "200_CompanyTranslation",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "200_Personio_Data",
+								"type": "DatasetReference"
+							},
+							"name": "Personio"
+						}
+					],
+					"transformations": [
+						{
+							"name": "LOADDatum"
+						},
+						{
+							"name": "filter1"
+						},
+						{
+							"name": "abgSp"
+						},
+						{
+							"name": "cast1"
+						},
+						{
+							"name": "join1"
+						}
+					],
+					"scriptLines": [
+						"parameters{",
+						"     PYear as string ('2025'),",
+						"     PMonth as string ('05')",
+						"}",
+						"source(output(",
+						"          Status as string,",
+						"          ID as integer,",
+						"          {E-Mail} as string,",
+						"          {Nachname (bürgerlich)} as string,",
+						"          {Vorname (bürgerlich)} as string,",
+						"          Abteilung as string,",
+						"          Alter as string,",
+						"          {Angestellt als} as string,",
+						"          Anstelldatum as string,",
+						"          Anstellungsart as string,",
+						"          {Mitarbeitergruppen nach Funktion} as string,",
+						"          Austrittsart11 as string,",
+						"          Austrittsart12 as string,",
+						"          {Austrittsdatum (aktueller Beschäftigungszeitraum)} as string,",
+						"          {Betriebsstätte} as string,",
+						"          {Betriebszugehörigkeit (in Jahren)} as string,",
+						"          {Eintrittsdatum (aktueller Beschäftigungszeitraum)} as string,",
+						"          {Ende des Arbeitsverhältnisses} as string,",
+						"          Ersteintrittsdatum as string,",
+						"          FTE as string,",
+						"          Geschlecht as string,",
+						"          Gesellschaft as string,",
+						"          {Grad der Behinderung} as string,",
+						"          Kostenstelle as string,",
+						"          {Kündigung (Datum)} as string,",
+						"          {Kündigungsgrund} as string,",
+						"          {Mitarbeitendenzahl (Status „Aktiv“ und „Auszeit“)} as string,",
+						"          {DATEV Personalnummer} as string,",
+						"          Position as string,",
+						"          Wochenstunden as string,",
+						"          {Bad Churn} as string,",
+						"          {Arbeits- und Wegeunfall / Work and Commute-related Accidents – genommen (Tage)} as string,",
+						"          {_c32} as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     wildcardPaths:[(concat('Personio/aktueller_Monat/Data_', $PYear, '_', $PMonth, '.csv'))]) ~> PersonioASCII",
+						"source(output(",
+						"          COMPANY as string,",
+						"          COMPANY_KEY as string,",
+						"          VALID_TO as integer,",
+						"          VALID_FROM as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> source1",
+						"cast1 derive(LoadDatum = currentTimestamp(),",
+						"          LoadPeriode = concat($PYear, $PMonth),",
+						"          Betriebszuge = toInteger({Betriebszugehörigkeit (in Jahren)})) ~> LOADDatum",
+						"PersonioASCII filter(!isNull(Gesellschaft)) ~> filter1",
+						"LOADDatum derive(vFTE = toDecimal(FTE, 27, 4, '#,##', 'de'),",
+						"          Anstellungsdauer = toDecimal(Betriebszuge),",
+						"          AktiveMA = toDecimal( {Mitarbeitendenzahl (Status „Aktiv“ und „Auszeit“)}, 27, 4, '#,##', 'de'),",
+						"          WochenStd = toDecimal(Wochenstunden, 27, 4, '#,##', 'de'),",
+						"          ArbUnf = iif(toInteger({Arbeits- und Wegeunfall / Work and Commute-related Accidents – genommen (Tage)}) > 0, 'Ja', toString(null())),",
+						"          ABTodesfall = iif(Austrittsart11 == 'Arbeitsbedingter Todesfall', 'Ja', toString(null())),",
+						"          Tenure_calculated = toInteger(round(minus(LoadDatum, toTimestamp(Ersteintrittsdatum, \"dd.MM.yyyy\")) / 1000 / 60 / 60 / 24 / 365.25, 0, 2))) ~> abgSp",
+						"filter1 cast(output(",
+						"          Alter as decimal(10,0) '000,000,000.000',",
+						"          {Betriebszugehörigkeit (in Jahren)} as decimal(10,0) '000,000,000.000'",
+						"     ),",
+						"     errors: true) ~> cast1",
+						"abgSp, source1 join(Gesellschaft == COMPANY,",
+						"     joinType:'left',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> join1",
+						"join1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          STATUS as string,",
+						"          ID as string,",
+						"          MAILADDRESS as string,",
+						"          FIRSTNAME as string,",
+						"          LASTNAME as string,",
+						"          DEPARTMENT as string,",
+						"          AGE as decimal(27,4),",
+						"          HIRED_AS as string,",
+						"          HIRE_DATE as date,",
+						"          EMPLOYMENT_TYPE as string,",
+						"          EMPLOYEE_GROUPS_BY_FUNCTION as string,",
+						"          EXIT_TYPE as string,",
+						"          EXIT_TYPE_2 as string,",
+						"          LEAVING_DATE_CURRENT_EMPLOYMENT_PERIOD as date,",
+						"          PLACE_OF_BUSINESS as string,",
+						"          LENGTH_OF_EMPLOYMENT_IN_YEARS as decimal(27,4),",
+						"          ENTRY_DATE_CURRENT_EMPLOYMENT_PERIOD as date,",
+						"          END_OF_EMPLOYMENT as date,",
+						"          FIRST_ENTRY_DATE as date,",
+						"          FTE as decimal(27,4),",
+						"          GENDER as string,",
+						"          COMPANY as string,",
+						"          DEGREE_OF_SEVERE_DISABILITY as string,",
+						"          COST_CENTRE as string,",
+						"          TERMINATION_DATE as date,",
+						"          REASON_FOR_TERMINATION as string,",
+						"          NUMBER_OF_EMPLOYEES_STATUS_ACTIVE_AND_TIME_OFF as decimal(27,4),",
+						"          DATEV_PERSONNEL_NUMBER as string,",
+						"          POSITION as string,",
+						"          WEEKLY_HOURS as decimal(27,4),",
+						"          LOAD_PERIOD as string,",
+						"          LOAD_TIME as timestamp,",
+						"          BAD_CHURN as string,",
+						"          ACCIDENT_AT_WORK as string,",
+						"          WORKRELATED_DEATH as string,",
+						"          COMPANY_KEY as string",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     preSQLs:[(concat('delete from [200_STG].[F_PERSONIO_DATA] WHERE [LOAD_PERIOD] = ', $PYear, $PMonth))],",
+						"     dateFormat:'dd.MM.yyyy',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          STATUS = Status,",
+						"          ID,",
+						"          MAILADDRESS = {E-Mail},",
+						"          FIRSTNAME = {Vorname (bürgerlich)},",
+						"          LASTNAME = {Nachname (bürgerlich)},",
+						"          DEPARTMENT = Abteilung,",
+						"          AGE = Alter,",
+						"          HIRED_AS = {Angestellt als},",
+						"          HIRE_DATE = Anstelldatum,",
+						"          EMPLOYMENT_TYPE = Anstellungsart,",
+						"          EMPLOYEE_GROUPS_BY_FUNCTION = {Mitarbeitergruppen nach Funktion},",
+						"          EXIT_TYPE = Austrittsart11,",
+						"          EXIT_TYPE_2 = Austrittsart12,",
+						"          LEAVING_DATE_CURRENT_EMPLOYMENT_PERIOD = {Austrittsdatum (aktueller Beschäftigungszeitraum)},",
+						"          PLACE_OF_BUSINESS = {Betriebsstätte},",
+						"          LENGTH_OF_EMPLOYMENT_IN_YEARS = Tenure_calculated,",
+						"          ENTRY_DATE_CURRENT_EMPLOYMENT_PERIOD = {Eintrittsdatum (aktueller Beschäftigungszeitraum)},",
+						"          END_OF_EMPLOYMENT = {Ende des Arbeitsverhältnisses},",
+						"          FIRST_ENTRY_DATE = Ersteintrittsdatum,",
+						"          FTE = vFTE,",
+						"          GENDER = Geschlecht,",
+						"          COMPANY = Gesellschaft,",
+						"          DEGREE_OF_SEVERE_DISABILITY = {Grad der Behinderung},",
+						"          COST_CENTRE = Kostenstelle,",
+						"          TERMINATION_DATE = {Kündigung (Datum)},",
+						"          REASON_FOR_TERMINATION = {Kündigungsgrund},",
+						"          NUMBER_OF_EMPLOYEES_STATUS_ACTIVE_AND_TIME_OFF = AktiveMA,",
+						"          DATEV_PERSONNEL_NUMBER = {DATEV Personalnummer},",
+						"          POSITION = Position,",
+						"          WEEKLY_HOURS = WochenStd,",
+						"          LOAD_PERIOD = LoadPeriode,",
+						"          LOAD_TIME = LoadDatum,",
+						"          BAD_CHURN = {Bad Churn},",
+						"          ACCIDENT_AT_WORK = ArbUnf,",
+						"          WORKRELATED_DEATH = ABTodesfall,",
+						"          COMPANY_KEY",
+						"     )) ~> Personio"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/200_PERSONIO_DATA_bis_202301')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "PersonioASCII_bis_202301",
+								"type": "DatasetReference"
+							},
+							"name": "PersonioASCII",
+							"description": "Daten aus PersonioASCII importieren"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "200_Personio_Data",
+								"type": "DatasetReference"
+							},
+							"name": "Personio"
+						}
+					],
+					"transformations": [
+						{
+							"name": "LOADDatum"
+						},
+						{
+							"name": "filter1"
+						},
+						{
+							"name": "abgSp"
+						},
+						{
+							"name": "cast1"
+						}
+					],
+					"scriptLines": [
+						"parameters{",
+						"     PYear as string ('2023'),",
+						"     PMonth as string ('04')",
+						"}",
+						"source(output(",
+						"          Status as string,",
+						"          ID as string,",
+						"          {E-Mail} as string,",
+						"          Name as string,",
+						"          { Vorname} as string,",
+						"          Abteilung as string,",
+						"          Alter as string,",
+						"          {Mitarbeitergruppen nach Anstellungsart} as string,",
+						"          Anstellungsdatum as string,",
+						"          Anstellungsart as string,",
+						"          {Mitarbeitergruppen nach Funktion} as string,",
+						"          Austrittsart11 as string,",
+						"          Austrittsart12 as string,",
+						"          {Austrittsdatum (aktueller Beschäftigungszeitraum)} as string,",
+						"          {Betriebsstätte} as string,",
+						"          {Betriebszugehörigkeit (in Jahren)} as string,",
+						"          {Eintrittsdatum (aktueller Beschäftigungszeitraum)} as string,",
+						"          {Ende des Arbeitsverhältnisses} as string,",
+						"          Ersteintrittsdatum as string,",
+						"          FTE as string,",
+						"          Geschlecht as string,",
+						"          Gesellschaft as string,",
+						"          {Grad der Schwerbehinderung} as string,",
+						"          Kostenstelle as string,",
+						"          {Kündigung (Datum)} as string,",
+						"          {Kündigungsgrund} as string,",
+						"          {Mitarbeiterzahl (Status „Aktiv“ und „Auszeit“)} as string,",
+						"          {DATEV Personalnummer} as string,",
+						"          Position as string,",
+						"          Wochenstunden as string,",
+						"          {Bad Churn} as string,",
+						"          Arbeitsunfall as string,",
+						"          {Arbeitsbedingter Todesfall} as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     wildcardPaths:[(concat('Personio/Schnittstelle_vor_Personio/Data_', $PYear, '_', $PMonth, '.csv'))]) ~> PersonioASCII",
+						"cast1 derive(LoadDatum = currentTimestamp(),",
+						"          LoadPeriode = concat($PYear, $PMonth),",
+						"          Betriebszuge = toInteger({Betriebszugehörigkeit (in Jahren)})) ~> LOADDatum",
+						"PersonioASCII filter(!isNull(Gesellschaft)) ~> filter1",
+						"LOADDatum derive(vFTE = toDecimal(FTE, 27, 4, '#,##', 'de'),",
+						"          Anstellungsdauer = toDecimal(Betriebszuge),",
+						"          AktiveMA = toDecimal({Mitarbeiterzahl (Status „Aktiv“ und „Auszeit“)}, 27, 4, '#,##', 'de'),",
+						"          WochenStd = toDecimal(Wochenstunden, 27, 4, '#,##', 'de')) ~> abgSp",
+						"filter1 cast(output(",
+						"          Alter as decimal(10,0) '000,000,000.000',",
+						"          {Betriebszugehörigkeit (in Jahren)} as decimal(10,0) '000,000,000.000'",
+						"     ),",
+						"     errors: true) ~> cast1",
+						"abgSp sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          STATUS as string,",
+						"          ID as string,",
+						"          MAILADDRESS as string,",
+						"          FIRSTNAME as string,",
+						"          LASTNAME as string,",
+						"          DEPARTMENT as string,",
+						"          AGE as decimal(27,4),",
+						"          HIRED_AS as string,",
+						"          HIRE_DATE as date,",
+						"          EMPLOYMENT_TYPE as string,",
+						"          EMPLOYEE_GROUPS_BY_FUNCTION as string,",
+						"          EXIT_TYPE as string,",
+						"          EXIT_TYPE_2 as string,",
+						"          LEAVING_DATE_CURRENT_EMPLOYMENT_PERIOD as date,",
+						"          PLACE_OF_BUSINESS as string,",
+						"          LENGTH_OF_EMPLOYMENT_IN_YEARS as decimal(27,4),",
+						"          ENTRY_DATE_CURRENT_EMPLOYMENT_PERIOD as date,",
+						"          END_OF_EMPLOYMENT as date,",
+						"          FIRST_ENTRY_DATE as date,",
+						"          FTE as decimal(27,4),",
+						"          GENDER as string,",
+						"          COMPANY as string,",
+						"          DEGREE_OF_SEVERE_DISABILITY as string,",
+						"          COST_CENTRE as string,",
+						"          TERMINATION_DATE as date,",
+						"          REASON_FOR_TERMINATION as string,",
+						"          NUMBER_OF_EMPLOYEES_STATUS_ACTIVE_AND_TIME_OFF as decimal(27,4),",
+						"          DATEV_PERSONNEL_NUMBER as string,",
+						"          POSITION as string,",
+						"          WEEKLY_HOURS as decimal(27,4),",
+						"          LOAD_PERIOD as string,",
+						"          LOAD_TIME as timestamp,",
+						"          BAD_CHURN as string,",
+						"          ACCIDENT_AT_WORK as string,",
+						"          WORKRELATED_DEATH as string,",
+						"          COMPANY_KEY as string",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     preSQLs:[(concat('delete from [200_STG].[F_PERSONIO_DATA] WHERE [LOAD_PERIOD] = ', $PYear, $PMonth))],",
+						"     dateFormat:'dd.MM.yyyy',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          STATUS = Status,",
+						"          ID,",
+						"          MAILADDRESS = {E-Mail},",
+						"          FIRSTNAME = { Vorname},",
+						"          LASTNAME = Name,",
+						"          DEPARTMENT = Abteilung,",
+						"          AGE = Alter,",
+						"          HIRED_AS = {Mitarbeitergruppen nach Anstellungsart},",
+						"          HIRE_DATE = Anstellungsdatum,",
+						"          EMPLOYMENT_TYPE = Anstellungsart,",
+						"          EMPLOYEE_GROUPS_BY_FUNCTION = {Mitarbeitergruppen nach Funktion},",
+						"          EXIT_TYPE = Austrittsart11,",
+						"          EXIT_TYPE_2 = Austrittsart12,",
+						"          LEAVING_DATE_CURRENT_EMPLOYMENT_PERIOD = {Austrittsdatum (aktueller Beschäftigungszeitraum)},",
+						"          PLACE_OF_BUSINESS = {Betriebsstätte},",
+						"          LENGTH_OF_EMPLOYMENT_IN_YEARS = Anstellungsdauer,",
+						"          ENTRY_DATE_CURRENT_EMPLOYMENT_PERIOD = {Eintrittsdatum (aktueller Beschäftigungszeitraum)},",
+						"          END_OF_EMPLOYMENT = {Ende des Arbeitsverhältnisses},",
+						"          FIRST_ENTRY_DATE = Ersteintrittsdatum,",
+						"          FTE = vFTE,",
+						"          GENDER = Geschlecht,",
+						"          COMPANY = Gesellschaft,",
+						"          DEGREE_OF_SEVERE_DISABILITY = {Grad der Schwerbehinderung},",
+						"          COST_CENTRE = Kostenstelle,",
+						"          TERMINATION_DATE = {Kündigung (Datum)},",
+						"          REASON_FOR_TERMINATION = {Kündigungsgrund},",
+						"          NUMBER_OF_EMPLOYEES_STATUS_ACTIVE_AND_TIME_OFF = AktiveMA,",
+						"          DATEV_PERSONNEL_NUMBER = {DATEV Personalnummer},",
+						"          POSITION = Position,",
+						"          WEEKLY_HOURS = WochenStd,",
+						"          LOAD_PERIOD = LoadPeriode,",
+						"          LOAD_TIME = LoadDatum,",
+						"          BAD_CHURN = {Bad Churn},",
+						"          ACCIDENT_AT_WORK = Arbeitsunfall,",
+						"          WORKRELATED_DEATH = {Arbeitsbedingter Todesfall}",
+						"     )) ~> Personio"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/400_FINANCIAL_DATA')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "200_Financial_Data",
+								"type": "DatasetReference"
+							},
+							"name": "quelle"
+						},
+						{
+							"dataset": {
+								"referenceName": "D_PERIOD",
+								"type": "DatasetReference"
+							},
+							"name": "periode"
+						},
+						{
+							"dataset": {
+								"referenceName": "200_CompanyTranslation",
+								"type": "DatasetReference"
+							},
+							"name": "CompanyTranslation"
+						},
+						{
+							"dataset": {
+								"referenceName": "200_KTO",
+								"type": "DatasetReference"
+							},
+							"name": "Kto"
+						},
+						{
+							"dataset": {
+								"referenceName": "AzureSqlCompanyBU",
+								"type": "DatasetReference"
+							},
+							"name": "CompanyBU"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "400_Financial_Report",
+								"type": "DatasetReference"
+							},
+							"name": "sink2"
+						}
+					],
+					"transformations": [
+						{
+							"name": "lookupPeriode"
+						},
+						{
+							"name": "PeriodeGesellschaft"
+						},
+						{
+							"name": "SucheCompanyKey"
+						},
+						{
+							"name": "lookupKto"
+						},
+						{
+							"name": "filter1"
+						},
+						{
+							"name": "lookupCompBU"
+						},
+						{
+							"name": "filter3"
+						},
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "aggregate2"
+						},
+						{
+							"name": "filter4"
+						},
+						{
+							"name": "filter5"
+						},
+						{
+							"name": "aggregate3"
+						},
+						{
+							"name": "filter6"
+						},
+						{
+							"name": "aggregate4"
+						},
+						{
+							"name": "union1"
+						},
+						{
+							"name": "derivedColumn2"
+						},
+						{
+							"name": "derivedColumn3"
+						},
+						{
+							"name": "derivedColumn4"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          GES as string,",
+						"          KTO as string,",
+						"          PERIODE as string,",
+						"          VALUE as double,",
+						"          VERSION as long,",
+						"          KONSEBENE as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> quelle",
+						"source(output(",
+						"          DP_PERIOD_ID as integer,",
+						"          DP_PERIOD as string,",
+						"          DP_START_DATE as date,",
+						"          DP_END_DATE as date",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> periode",
+						"source(output(",
+						"          COMPANY as string,",
+						"          COMPANY_KEY as string,",
+						"          VALID_TO as integer,",
+						"          VALID_FROM as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> CompanyTranslation",
+						"source(output(",
+						"          WorkspaceID as string,",
+						"          ReportElementID as string,",
+						"          AccountName as string,",
+						"          SourceAccountID as long,",
+						"          ChildIndex as integer,",
+						"          PeriodType as string,",
+						"          BalanceType as string,",
+						"          TransactionTypeCategoryID as long,",
+						"          IsFormula as integer,",
+						"          IsTotalLine as integer,",
+						"          IsTimeSeries as integer,",
+						"          IsSeparatorLine as integer,",
+						"          GeneralLedgerAccount as long,",
+						"          PermittedUsersForAccount as string,",
+						"          AccountLevel1ID as string,",
+						"          AccountLevel1 as string,",
+						"          AccountLevel1CI as integer,",
+						"          AccountLevel2ID as string,",
+						"          AccountLevel2 as string,",
+						"          AccountLevel2CI as integer,",
+						"          AccountLevel3ID as string,",
+						"          AccountLevel3 as string,",
+						"          AccountLevel3CI as integer,",
+						"          AccountLevel4ID as string,",
+						"          AccountLevel4 as string,",
+						"          AccountLevel4CI as integer,",
+						"          AccountLevel5ID as string,",
+						"          AccountLevel5 as string,",
+						"          AccountLevel5CI as integer,",
+						"          AccountLevel6ID as string,",
+						"          AccountLevel6 as string,",
+						"          AccountLevel6CI as integer,",
+						"          AccountLevel7ID as string,",
+						"          AccountLevel7 as string,",
+						"          AccountLevel7CI as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> Kto",
+						"source(output(",
+						"          AccountingOrConsolidationArea as string,",
+						"          OrganisationElementID as long,",
+						"          OrganisationElementName as string,",
+						"          OrganisationElementChildIndex as integer,",
+						"          SourceType as string,",
+						"          ReportingEntityID as long,",
+						"          DefaultTransactionCurrency as string,",
+						"          PermittedUsersForElement as string,",
+						"          OrganisationLevel1ID as string,",
+						"          OrganisationLevel1 as string,",
+						"          OrganisationLevel1CI as integer,",
+						"          OrganisationLevel2ID as string,",
+						"          OrganisationLevel2 as string,",
+						"          OrganisationLevel2CI as integer,",
+						"          OrganisationLevel3ID as string,",
+						"          OrganisationLevel3 as string,",
+						"          OrganisationLevel3CI as integer,",
+						"          OrganisationLevel4ID as string,",
+						"          OrganisationLevel4 as string,",
+						"          OrganisationLevel4CI as integer,",
+						"          OrganisationLevel5ID as string,",
+						"          OrganisationLevel5 as string,",
+						"          OrganisationLevel5CI as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> CompanyBU",
+						"PeriodeGesellschaft, periode lookup(Periode6 == DP_PERIOD,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> lookupPeriode",
+						"filter3 derive(Periode6 = concat(left(PERIODE, 4), right(PERIODE, 2)),",
+						"          Gesellschaft = iif ( equals(KONSEBENE, 'Einzelabschluss HB2 adj.'), AccountingOrConsolidationArea, 'ATG' ),",
+						"          PeriodeNum = toInteger(concat(left(PERIODE, 4), right(PERIODE, 2)))) ~> PeriodeGesellschaft",
+						"lookupPeriode, CompanyTranslation lookup(Gesellschaft == COMPANY",
+						"     && PeriodeNum >= VALID_FROM",
+						"     && PeriodeNum <= VALID_TO,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'right')~> SucheCompanyKey",
+						"quelle, Kto lookup(KTO == ReportElementID,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> lookupKto",
+						"lookupKto filter(equals(KTO, '2462345') || equals(KTO, '2462254') || equals(AccountLevel3ID, '2462256')  || equals(AccountLevel4ID, '2462257') || equals(AccountLevel5ID, '2462442_REF_2461463') || equals(AccountLevel4ID, '2462259')) ~> filter1",
+						"filter1, CompanyBU lookup(GES == OrganisationElementName,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> lookupCompBU",
+						"lookupCompBU filter(( equals(KONSEBENE, 'Einzelabschluss HB2 adj.') && !equals(OrganisationElementID, 2477920) ) || ( equals(OrganisationElementID, 2477920) && equals(KONSEBENE, 'Konzern') )) ~> filter3",
+						"SucheCompanyKey derive(Ges = iif(isNull(COMPANY_KEY), Gesellschaft, COMPANY_KEY),",
+						"          BU = iif ( equals(KONSEBENE, 'Einzelabschluss HB2 adj.'), iif( equals(SourceType, 'CostCenter'), OrganisationElementName, toString(null())), toString(null()) ),",
+						"          Actuals = iif(equals(VERSION, 1201), VALUE, toDouble(null())),",
+						"          Budget = iif(equals(VERSION, 2479958) || equals(VERSION, 2535825) || equals(VERSION, 2680301), VALUE, toDouble(null())),",
+						"          Periode6 = concat(left(PERIODE, 4), right(PERIODE, 2))) ~> derivedColumn1",
+						"filter4 aggregate(groupBy(derivedColumn1@Ges,",
+						"          Konto,",
+						"          Periode6,",
+						"          BU,",
+						"          KONSEBENE,",
+						"          DP_PERIOD_ID),",
+						"     ActValue = sum(Actuals),",
+						"          BudValue = sum(Budget)) ~> aggregate2",
+						"derivedColumn4 filter(KontoFilter == 1) ~> filter4",
+						"derivedColumn3 filter(KontoFilter == 2) ~> filter5",
+						"filter5 aggregate(groupBy(derivedColumn1@Ges,",
+						"          Konto,",
+						"          Periode6,",
+						"          BU,",
+						"          KONSEBENE,",
+						"          DP_PERIOD_ID),",
+						"     ActValue = sum(Actuals),",
+						"          BudValue = sum(Budget)) ~> aggregate3",
+						"derivedColumn2 filter(KontoFilter == 3) ~> filter6",
+						"filter6 aggregate(groupBy(derivedColumn1@Ges,",
+						"          Konto,",
+						"          Periode6,",
+						"          BU,",
+						"          KONSEBENE,",
+						"          DP_PERIOD_ID),",
+						"     ActValue = sum(Actuals),",
+						"          BudValue = sum(Budget)) ~> aggregate4",
+						"aggregate2, aggregate3, aggregate4 union(byName: true)~> union1",
+						"derivedColumn1 derive(Konto = case( equals(AccountLevel3ID, '2462256') , AccountLevel3\r",
+						"    , 'kein Konto'\r",
+						"),",
+						"          KontoFilter = case( equals(AccountLevel3ID, '2462256') , 3\r",
+						"    , 0\r",
+						")) ~> derivedColumn2",
+						"derivedColumn1 derive(Konto = case( equals(KTO, '2462345') || equals(KTO, '2462254'), AccountName\r",
+						"    , 'kein Konto'\r",
+						"),",
+						"          KontoFilter = case( equals(KTO, '2462345') || equals(KTO, '2462254'), 2\r",
+						"    , 0\r",
+						")) ~> derivedColumn3",
+						"derivedColumn1 derive(Konto = case(equals(AccountLevel4ID, '2462257') || equals(AccountLevel5ID, '2462442_REF_2461463') || equals(AccountLevel4ID, '2462259') , 'Salary expenses'\r",
+						"    , 'kein Konto'\r",
+						"),",
+						"          KontoFilter = case(equals(AccountLevel4ID, '2462257') || equals(AccountLevel5ID, '2462442_REF_2461463') || equals(AccountLevel4ID, '2462259') , 1\r",
+						"    , 0\r",
+						")) ~> derivedColumn4",
+						"union1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          FR_PERIOD as string,",
+						"          FR_YEAR as string,",
+						"          FR_MONTH as string,",
+						"          FR_COMPANY as string,",
+						"          FR_BU as string,",
+						"          FR_ACCOUNT as string,",
+						"          FR_VALUE_ACT as decimal(27,4),",
+						"          FR_VALUE_BUDGET as decimal(27,4),",
+						"          FR_PERIODID as integer",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     preSQLs:['truncate table [400_DWH].[F_FINANCIAL_REPORT]'],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          FR_PERIOD = Periode6,",
+						"          FR_YEAR = KONSEBENE,",
+						"          FR_COMPANY = Ges,",
+						"          FR_BU = BU,",
+						"          FR_ACCOUNT = Konto,",
+						"          FR_VALUE_ACT = ActValue,",
+						"          FR_VALUE_BUDGET = BudValue,",
+						"          FR_PERIODID = DP_PERIOD_ID",
+						"     )) ~> sink2"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/400_FINANCIAL_DATA_copy1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "200_Financial_Data",
+								"type": "DatasetReference"
+							},
+							"name": "quelle"
+						},
+						{
+							"dataset": {
+								"referenceName": "D_PERIOD",
+								"type": "DatasetReference"
+							},
+							"name": "periode"
+						},
+						{
+							"dataset": {
+								"referenceName": "200_CompanyTranslation",
+								"type": "DatasetReference"
+							},
+							"name": "CompanyTranslation"
+						},
+						{
+							"dataset": {
+								"referenceName": "200_KTO",
+								"type": "DatasetReference"
+							},
+							"name": "Kto"
+						},
+						{
+							"dataset": {
+								"referenceName": "AzureSqlCompanyBU",
+								"type": "DatasetReference"
+							},
+							"name": "CompanyBU"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "400_Financial_Report",
+								"type": "DatasetReference"
+							},
+							"name": "finrep"
+						}
+					],
+					"transformations": [
+						{
+							"name": "lookupPeriode"
+						},
+						{
+							"name": "KontoErmitteln"
+						},
+						{
+							"name": "SucheCompanyKey"
+						},
+						{
+							"name": "lookupKto"
+						},
+						{
+							"name": "filter1"
+						},
+						{
+							"name": "aggregate1"
+						},
+						{
+							"name": "lookupCompBU"
+						},
+						{
+							"name": "filter3"
+						},
+						{
+							"name": "derivedColumn1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          GES as string,",
+						"          KTO as string,",
+						"          PERIODE as string,",
+						"          VALUE as double,",
+						"          VERSION as long,",
+						"          KONSEBENE as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> quelle",
+						"source(output(",
+						"          DP_PERIOD_ID as integer,",
+						"          DP_PERIOD as string,",
+						"          DP_START_DATE as date,",
+						"          DP_END_DATE as date",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> periode",
+						"source(output(",
+						"          COMPANY as string,",
+						"          COMPANY_KEY as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> CompanyTranslation",
+						"source(output(",
+						"          WorkspaceID as string,",
+						"          ReportElementID as string,",
+						"          AccountName as string,",
+						"          SourceAccountID as long,",
+						"          ChildIndex as integer,",
+						"          PeriodType as string,",
+						"          BalanceType as string,",
+						"          TransactionTypeCategoryID as long,",
+						"          IsFormula as integer,",
+						"          IsTotalLine as integer,",
+						"          IsTimeSeries as integer,",
+						"          IsSeparatorLine as integer,",
+						"          GeneralLedgerAccount as long,",
+						"          PermittedUsersForAccount as string,",
+						"          AccountLevel1ID as string,",
+						"          AccountLevel1 as string,",
+						"          AccountLevel1CI as integer,",
+						"          AccountLevel2ID as string,",
+						"          AccountLevel2 as string,",
+						"          AccountLevel2CI as integer,",
+						"          AccountLevel3ID as string,",
+						"          AccountLevel3 as string,",
+						"          AccountLevel3CI as integer,",
+						"          AccountLevel4ID as string,",
+						"          AccountLevel4 as string,",
+						"          AccountLevel4CI as integer,",
+						"          AccountLevel5ID as string,",
+						"          AccountLevel5 as string,",
+						"          AccountLevel5CI as integer,",
+						"          AccountLevel6ID as string,",
+						"          AccountLevel6 as string,",
+						"          AccountLevel6CI as integer,",
+						"          AccountLevel7ID as string,",
+						"          AccountLevel7 as string,",
+						"          AccountLevel7CI as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> Kto",
+						"source(output(",
+						"          AccountingOrConsolidationArea as string,",
+						"          OrganisationElementID as long,",
+						"          OrganisationElementName as string,",
+						"          OrganisationElementChildIndex as integer,",
+						"          SourceType as string,",
+						"          ReportingEntityID as long,",
+						"          DefaultTransactionCurrency as string,",
+						"          PermittedUsersForElement as string,",
+						"          OrganisationLevel1ID as string,",
+						"          OrganisationLevel1 as string,",
+						"          OrganisationLevel1CI as integer,",
+						"          OrganisationLevel2ID as string,",
+						"          OrganisationLevel2 as string,",
+						"          OrganisationLevel2CI as integer,",
+						"          OrganisationLevel3ID as string,",
+						"          OrganisationLevel3 as string,",
+						"          OrganisationLevel3CI as integer,",
+						"          OrganisationLevel4ID as string,",
+						"          OrganisationLevel4 as string,",
+						"          OrganisationLevel4CI as integer,",
+						"          OrganisationLevel5ID as string,",
+						"          OrganisationLevel5 as string,",
+						"          OrganisationLevel5CI as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> CompanyBU",
+						"aggregate1, periode lookup(Periode6 == DP_PERIOD,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> lookupPeriode",
+						"filter3 derive(Konto = case(equals(AccountLevel4ID, '2462257') || equals(AccountLevel5ID, '2462442_REF_2461463') || equals(AccountLevel4ID, '2462259') , 'Salary expenses'\r",
+						"    , equals(KTO, '2462345') || equals(KTO, '2462254'), AccountName\r",
+						"    , equals(AccountLevel3ID, '2462256') , AccountLevel3\r",
+						"    , 'kein Konto'\r",
+						"),",
+						"          Gesellschaft = iif ( equals(KONSEBENE, 'Einzelabschluss HB2 adj.'), AccountingOrConsolidationArea, 'ATG' ),",
+						"          BU = iif ( equals(KONSEBENE, 'Einzelabschluss HB2 adj.'), iif( equals(SourceType, 'CostCenter'), OrganisationElementName, toString(null())), toString(null()) ),",
+						"          Actuals = iif(equals(VERSION, 1201), VALUE, toDouble(null())),",
+						"          Budget = iif(equals(VERSION, 2479958), VALUE, toDouble(null())),",
+						"          Periode6 = concat(left(PERIODE, 4), right(PERIODE, 2))) ~> KontoErmitteln",
+						"lookupPeriode, CompanyTranslation lookup(Gesellschaft == COMPANY,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> SucheCompanyKey",
+						"quelle, Kto lookup(KTO == ReportElementID,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> lookupKto",
+						"lookupKto filter(equals(KTO, '2462345') || equals(KTO, '2462254') || equals(AccountLevel3ID, '2462256')  || equals(AccountLevel4ID, '2462257') || equals(AccountLevel5ID, '2462442_REF_2461463') || equals(AccountLevel4ID, '2462259')) ~> filter1",
+						"KontoErmitteln aggregate(groupBy(Gesellschaft,",
+						"          KTO,",
+						"          Periode6,",
+						"          BU,",
+						"          KONSEBENE),",
+						"     ActVal = sum(Actuals),",
+						"          BudVal = sum(Budget)) ~> aggregate1",
+						"filter1, CompanyBU lookup(GES == OrganisationElementName,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> lookupCompBU",
+						"lookupCompBU filter(( equals(KONSEBENE, 'Einzelabschluss HB2 adj.') && !equals(OrganisationElementID, 2477920) ) || ( equals(OrganisationElementID, 2477920) && equals(KONSEBENE, 'Konzern') )) ~> filter3",
+						"SucheCompanyKey derive(Ges = iif(isNull(COMPANY_KEY), Gesellschaft, COMPANY_KEY)) ~> derivedColumn1",
+						"derivedColumn1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          FR_PERIOD as string,",
+						"          FR_YEAR as string,",
+						"          FR_MONTH as string,",
+						"          FR_COMPANY as string,",
+						"          FR_BU as string,",
+						"          FR_ACCOUNT as string,",
+						"          FR_VALUE_ACT as decimal(27,4),",
+						"          FR_VALUE_BUDGET as decimal(27,4),",
+						"          FR_PERIODID as integer",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     preSQLs:['truncate table [400_DWH].[F_FINANCIAL_REPORT]'],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          FR_PERIOD = Periode6,",
+						"          FR_COMPANY = Ges,",
+						"          FR_ACCOUNT = KTO,",
+						"          FR_VALUE_ACT = ActVal,",
+						"          FR_VALUE_BUDGET = BudVal,",
+						"          FR_PERIODID = DP_PERIOD_ID,",
+						"          FR_BU = BU,",
+						"          FR_YEAR = KONSEBENE",
+						"     )) ~> finrep"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/400_FINANCIAL_DATA_copy2')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "200_Financial_Data",
+								"type": "DatasetReference"
+							},
+							"name": "quelle"
+						},
+						{
+							"dataset": {
+								"referenceName": "D_PERIOD",
+								"type": "DatasetReference"
+							},
+							"name": "periode"
+						},
+						{
+							"dataset": {
+								"referenceName": "200_CompanyTranslation",
+								"type": "DatasetReference"
+							},
+							"name": "CompanyTranslation"
+						},
+						{
+							"dataset": {
+								"referenceName": "200_KTO",
+								"type": "DatasetReference"
+							},
+							"name": "Kto"
+						},
+						{
+							"dataset": {
+								"referenceName": "AzureSqlCompanyBU",
+								"type": "DatasetReference"
+							},
+							"name": "CompanyBU"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "400_Financial_Report",
+								"type": "DatasetReference"
+							},
+							"name": "finrep"
+						},
+						{
+							"dataset": {
+								"referenceName": "400_Financial_Report",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						},
+						{
+							"dataset": {
+								"referenceName": "400_Financial_Report",
+								"type": "DatasetReference"
+							},
+							"name": "sink2"
+						}
+					],
+					"transformations": [
+						{
+							"name": "lookupPeriode"
+						},
+						{
+							"name": "PeriodeGesellschaft"
+						},
+						{
+							"name": "SucheCompanyKey"
+						},
+						{
+							"name": "lookupKto"
+						},
+						{
+							"name": "filter1"
+						},
+						{
+							"name": "lookupCompBU"
+						},
+						{
+							"name": "filter3"
+						},
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "aggregate2"
+						},
+						{
+							"name": "filter4"
+						},
+						{
+							"name": "filter5"
+						},
+						{
+							"name": "aggregate3"
+						},
+						{
+							"name": "filter6"
+						},
+						{
+							"name": "aggregate4"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          GES as string,",
+						"          KTO as string,",
+						"          PERIODE as string,",
+						"          VALUE as double,",
+						"          VERSION as long,",
+						"          KONSEBENE as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> quelle",
+						"source(output(",
+						"          DP_PERIOD_ID as integer,",
+						"          DP_PERIOD as string,",
+						"          DP_START_DATE as date,",
+						"          DP_END_DATE as date",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> periode",
+						"source(output(",
+						"          COMPANY as string,",
+						"          COMPANY_KEY as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> CompanyTranslation",
+						"source(output(",
+						"          WorkspaceID as string,",
+						"          ReportElementID as string,",
+						"          AccountName as string,",
+						"          SourceAccountID as long,",
+						"          ChildIndex as integer,",
+						"          PeriodType as string,",
+						"          BalanceType as string,",
+						"          TransactionTypeCategoryID as long,",
+						"          IsFormula as integer,",
+						"          IsTotalLine as integer,",
+						"          IsTimeSeries as integer,",
+						"          IsSeparatorLine as integer,",
+						"          GeneralLedgerAccount as long,",
+						"          PermittedUsersForAccount as string,",
+						"          AccountLevel1ID as string,",
+						"          AccountLevel1 as string,",
+						"          AccountLevel1CI as integer,",
+						"          AccountLevel2ID as string,",
+						"          AccountLevel2 as string,",
+						"          AccountLevel2CI as integer,",
+						"          AccountLevel3ID as string,",
+						"          AccountLevel3 as string,",
+						"          AccountLevel3CI as integer,",
+						"          AccountLevel4ID as string,",
+						"          AccountLevel4 as string,",
+						"          AccountLevel4CI as integer,",
+						"          AccountLevel5ID as string,",
+						"          AccountLevel5 as string,",
+						"          AccountLevel5CI as integer,",
+						"          AccountLevel6ID as string,",
+						"          AccountLevel6 as string,",
+						"          AccountLevel6CI as integer,",
+						"          AccountLevel7ID as string,",
+						"          AccountLevel7 as string,",
+						"          AccountLevel7CI as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> Kto",
+						"source(output(",
+						"          AccountingOrConsolidationArea as string,",
+						"          OrganisationElementID as long,",
+						"          OrganisationElementName as string,",
+						"          OrganisationElementChildIndex as integer,",
+						"          SourceType as string,",
+						"          ReportingEntityID as long,",
+						"          DefaultTransactionCurrency as string,",
+						"          PermittedUsersForElement as string,",
+						"          OrganisationLevel1ID as string,",
+						"          OrganisationLevel1 as string,",
+						"          OrganisationLevel1CI as integer,",
+						"          OrganisationLevel2ID as string,",
+						"          OrganisationLevel2 as string,",
+						"          OrganisationLevel2CI as integer,",
+						"          OrganisationLevel3ID as string,",
+						"          OrganisationLevel3 as string,",
+						"          OrganisationLevel3CI as integer,",
+						"          OrganisationLevel4ID as string,",
+						"          OrganisationLevel4 as string,",
+						"          OrganisationLevel4CI as integer,",
+						"          OrganisationLevel5ID as string,",
+						"          OrganisationLevel5 as string,",
+						"          OrganisationLevel5CI as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> CompanyBU",
+						"PeriodeGesellschaft, periode lookup(Periode6 == DP_PERIOD,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> lookupPeriode",
+						"filter3 derive(Periode6 = concat(left(PERIODE, 4), right(PERIODE, 2)),",
+						"          Gesellschaft = iif ( equals(KONSEBENE, 'Einzelabschluss HB2 adj.'), AccountingOrConsolidationArea, 'ATG' )) ~> PeriodeGesellschaft",
+						"lookupPeriode, CompanyTranslation lookup(Gesellschaft == COMPANY,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> SucheCompanyKey",
+						"quelle, Kto lookup(KTO == ReportElementID,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> lookupKto",
+						"lookupKto filter(equals(KTO, '2462345') || equals(KTO, '2462254') || equals(AccountLevel3ID, '2462256')  || equals(AccountLevel4ID, '2462257') || equals(AccountLevel5ID, '2462442_REF_2461463') || equals(AccountLevel4ID, '2462259')) ~> filter1",
+						"filter1, CompanyBU lookup(GES == OrganisationElementName,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> lookupCompBU",
+						"lookupCompBU filter(( equals(KONSEBENE, 'Einzelabschluss HB2 adj.') && !equals(OrganisationElementID, 2477920) ) || ( equals(OrganisationElementID, 2477920) && equals(KONSEBENE, 'Konzern') )) ~> filter3",
+						"SucheCompanyKey derive(Ges = iif(isNull(COMPANY_KEY), Gesellschaft, COMPANY_KEY),",
+						"          Konto = case(equals(AccountLevel4ID, '2462257') || equals(AccountLevel5ID, '2462442_REF_2461463') || equals(AccountLevel4ID, '2462259') , 'Salary expenses'\r",
+						"    , equals(KTO, '2462345') || equals(KTO, '2462254'), AccountName\r",
+						"    , equals(AccountLevel3ID, '2462256') , AccountLevel3\r",
+						"    , 'kein Konto'\r",
+						"),",
+						"          FilterKonto = case(equals(AccountLevel4ID, '2462257') || equals(AccountLevel5ID, '2462442_REF_2461463') || equals(AccountLevel4ID, '2462259') , 1\r",
+						"    , equals(KTO, '2462345') || equals(KTO, '2462254'), 2\r",
+						"    , equals(AccountLevel3ID, '2462256') , 3\r",
+						"    , 0\r",
+						"),",
+						"          BU = iif ( equals(KONSEBENE, 'Einzelabschluss HB2 adj.'), iif( equals(SourceType, 'CostCenter'), OrganisationElementName, toString(null())), toString(null()) ),",
+						"          Actuals = iif(equals(VERSION, 1201), VALUE, toDouble(null())),",
+						"          Budget = iif(equals(VERSION, 2479958), VALUE, toDouble(null())),",
+						"          Periode6 = concat(left(PERIODE, 4), right(PERIODE, 2))) ~> derivedColumn1",
+						"filter4 aggregate(groupBy(derivedColumn1@Ges,",
+						"          Konto,",
+						"          Periode6,",
+						"          BU,",
+						"          KONSEBENE,",
+						"          DP_PERIOD_ID),",
+						"     ActVal = sum(Actuals),",
+						"          BudVal = sum(Budget)) ~> aggregate2",
+						"derivedColumn1 filter(FilterKonto == 1) ~> filter4",
+						"derivedColumn1 filter(FilterKonto == 2) ~> filter5",
+						"filter5 aggregate(groupBy(derivedColumn1@Ges,",
+						"          Konto,",
+						"          Periode6,",
+						"          BU,",
+						"          KONSEBENE,",
+						"          DP_PERIOD_ID),",
+						"     ActValue = sum(Actuals),",
+						"          BudValue = sum(Budget)) ~> aggregate3",
+						"derivedColumn1 filter(FilterKonto == 3) ~> filter6",
+						"filter6 aggregate(groupBy(derivedColumn1@Ges,",
+						"          Konto,",
+						"          Periode6,",
+						"          BU,",
+						"          KONSEBENE,",
+						"          DP_PERIOD_ID),",
+						"     ActValue = sum(Actuals),",
+						"          BudValue = sum(Budget)) ~> aggregate4",
+						"aggregate2 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          FR_PERIOD as string,",
+						"          FR_YEAR as string,",
+						"          FR_MONTH as string,",
+						"          FR_COMPANY as string,",
+						"          FR_BU as string,",
+						"          FR_ACCOUNT as string,",
+						"          FR_VALUE_ACT as decimal(27,4),",
+						"          FR_VALUE_BUDGET as decimal(27,4),",
+						"          FR_PERIODID as integer",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          FR_PERIOD = Periode6,",
+						"          FR_COMPANY = Ges,",
+						"          FR_ACCOUNT = Konto,",
+						"          FR_VALUE_ACT = ActVal,",
+						"          FR_VALUE_BUDGET = BudVal,",
+						"          FR_PERIODID = DP_PERIOD_ID,",
+						"          FR_BU = BU,",
+						"          FR_YEAR = KONSEBENE",
+						"     )) ~> finrep",
+						"aggregate3 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          FR_PERIOD as string,",
+						"          FR_YEAR as string,",
+						"          FR_MONTH as string,",
+						"          FR_COMPANY as string,",
+						"          FR_BU as string,",
+						"          FR_ACCOUNT as string,",
+						"          FR_VALUE_ACT as decimal(27,4),",
+						"          FR_VALUE_BUDGET as decimal(27,4),",
+						"          FR_PERIODID as integer",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          FR_PERIOD = Periode6,",
+						"          FR_YEAR = KONSEBENE,",
+						"          FR_COMPANY = Ges,",
+						"          FR_BU = BU,",
+						"          FR_ACCOUNT = Konto,",
+						"          FR_VALUE_ACT = ActValue,",
+						"          FR_VALUE_BUDGET = BudValue,",
+						"          FR_PERIODID = DP_PERIOD_ID",
+						"     )) ~> sink1",
+						"aggregate4 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          FR_PERIOD as string,",
+						"          FR_YEAR as string,",
+						"          FR_MONTH as string,",
+						"          FR_COMPANY as string,",
+						"          FR_BU as string,",
+						"          FR_ACCOUNT as string,",
+						"          FR_VALUE_ACT as decimal(27,4),",
+						"          FR_VALUE_BUDGET as decimal(27,4),",
+						"          FR_PERIODID as integer",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          FR_PERIOD = Periode6,",
+						"          FR_YEAR = KONSEBENE,",
+						"          FR_COMPANY = Ges,",
+						"          FR_BU = BU,",
+						"          FR_ACCOUNT = Konto,",
+						"          FR_VALUE_ACT = ActValue,",
+						"          FR_VALUE_BUDGET = BudValue,",
+						"          FR_PERIODID = DP_PERIOD_ID",
+						"     )) ~> sink2"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/400_PERSONELL_BUDGET')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "200_Personell_Budget",
+								"type": "DatasetReference"
+							},
+							"name": "Budget200"
+						},
+						{
+							"dataset": {
+								"referenceName": "200_CompanyTranslation",
+								"type": "DatasetReference"
+							},
+							"name": "Ges"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "400_Personell_Budget",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "lookupGes"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          COMPANY as string,",
+						"          KPI as string,",
+						"          FUNCTION as string,",
+						"          PERIOD as string,",
+						"          BUDGET_VALUE as decimal(10,0)",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> Budget200",
+						"source(output(",
+						"          COMPANY as string,",
+						"          COMPANY_KEY as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> Ges",
+						"Budget200, Ges lookup(Budget200@COMPANY == Ges@COMPANY,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> lookupGes",
+						"lookupGes sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          COMPANY as string,",
+						"          KPI as string,",
+						"          FUNCTION as string,",
+						"          PERIOD as string,",
+						"          BUDGET_HC as decimal(27,4),",
+						"          BUDGET_FTE as decimal(27,4)",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     truncate:true,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          COMPANY = Budget200@COMPANY,",
+						"          KPI,",
+						"          FUNCTION,",
+						"          PERIOD,",
+						"          BUDGET_FTE = BUDGET_VALUE",
+						"     )) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/400_PERSONELL_BUDGET_AB')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "400_PERSONELL_DATA",
+								"type": "DatasetReference"
+							},
+							"name": "AB"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "400_Personell_Budget",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "KPIAB"
+						},
+						{
+							"name": "filter1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          FPR_PERIOD as string,",
+						"          FPR_COMPANY as string,",
+						"          FPR_FUNCTION as string,",
+						"          Anfangsbestand as decimal(38,4)",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     query: 'SELECT [FPR_PERIOD]\\n      ,[FPR_COMPANY]\\n      ,[FPR_FUNCTION]\\n      ,sum([FPR_FTE_EMPLOYEES_START_PERIOD]) as Anfangsbestand\\n  FROM [400_DWH].[F_PERSONELL_REPORT]\\n  group by FPR_PERIOD, FPR_COMPANY, FPR_FUNCTION',",
+						"     format: 'query') ~> AB",
+						"filter1 derive(KPI = \"AB\") ~> KPIAB",
+						"AB filter(right(FPR_PERIOD, 2) ==\"01\") ~> filter1",
+						"KPIAB sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          COMPANY as string,",
+						"          KPI as string,",
+						"          FUNCTION as string,",
+						"          PERIOD as string,",
+						"          BUDGET_HC as decimal(27,4),",
+						"          BUDGET_FTE as decimal(27,4)",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          COMPANY = FPR_COMPANY,",
+						"          KPI,",
+						"          FUNCTION = FPR_FUNCTION,",
+						"          PERIOD = FPR_PERIOD,",
+						"          BUDGET_FTE = Anfangsbestand",
+						"     )) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/400_PERSONELL_BUDGET_pivot')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "100_STG_PERS_BUDGET_24",
+								"type": "DatasetReference"
+							},
+							"name": "Budget100"
+						},
+						{
+							"dataset": {
+								"referenceName": "200_CompanyTranslation",
+								"type": "DatasetReference"
+							},
+							"name": "Ges"
+						},
+						{
+							"dataset": {
+								"referenceName": "400_TRANSLATION",
+								"type": "DatasetReference"
+							},
+							"name": "Translation"
+						},
+						{
+							"dataset": {
+								"referenceName": "400_PERSONELL_DATA",
+								"type": "DatasetReference"
+							},
+							"name": "source9"
+						},
+						{
+							"dataset": {
+								"referenceName": "CompanyMapping",
+								"type": "DatasetReference"
+							},
+							"name": "CompanyMapping"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable9",
+								"type": "DatasetReference"
+							},
+							"name": "sink2"
+						}
+					],
+					"transformations": [
+						{
+							"name": "pivot1"
+						},
+						{
+							"name": "aggregate1"
+						},
+						{
+							"name": "join1"
+						},
+						{
+							"name": "window1"
+						},
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "ABhinzufuegen"
+						},
+						{
+							"name": "MapDrifted1",
+							"description": "Hiermit wird für jede abweichende Spalte eine explizite Zuordnung erstellt."
+						},
+						{
+							"name": "join2"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          COMPANY as string,",
+						"          KPI as string,",
+						"          FUNCTION as string,",
+						"          PERIOD as string,",
+						"          BUDGET as decimal(10,2)",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> Budget100",
+						"source(output(",
+						"          COMPANY as string,",
+						"          COMPANY_KEY as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> Ges",
+						"source(output(",
+						"          DATAAREA as string,",
+						"          SRC_VALUE as string,",
+						"          TRANSLATION as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     query: 'SELECT DISTINCT [DATAAREA]\\n      ,[SRC_VALUE]\\n      ,[TRANSLATION]\\n  FROM [400_DWH].[TRANSLATIONS]',",
+						"     format: 'query') ~> Translation",
+						"source(output(",
+						"          FPR_PERIOD as string,",
+						"          FPR_COMPANY as string,",
+						"          FPR_FUNCTION as string,",
+						"          FPR_FTE_EMPLOYEES_END_PERIOD_INCL_GROUPCHANGE as decimal(18,4)",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     query: 'SELECT [FPR_PERIOD]\\n      ,[FPR_COMPANY]\\n      ,[FPR_FUNCTION]\\n      ,[FPR_FTE_EMPLOYEES_END_PERIOD_INCL_GROUPCHANGE]\\nFROM [400_DWH].[F_PERSONELL_REPORT]\\nWHERE [FPR_PERIOD] = \\'202312\\'',",
+						"     format: 'query') ~> source9",
+						"source(output(",
+						"          Gesellschaft as string,",
+						"          {Kürzel} as string,",
+						"          {gültig bis} as string,",
+						"          {gültig ab} as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> CompanyMapping",
+						"Budget100 pivot(groupBy(COMPANY,",
+						"          FUNCTION,",
+						"          PERIOD),",
+						"     pivotBy(KPI),",
+						"     {} = sum(BUDGET),",
+						"     columnNaming: '$N$V',",
+						"     lateral: true) ~> pivot1",
+						"source9 aggregate(groupBy(FPR_COMPANY,",
+						"          FPR_FUNCTION),",
+						"     EB_FTE_SUM = sum(FPR_FTE_EMPLOYEES_END_PERIOD_INCL_GROUPCHANGE)) ~> aggregate1",
+						"aggregate1, join2 join(FPR_COMPANY == COMPANY",
+						"     && FPR_FUNCTION == TRANSLATION,",
+						"     joinType:'outer',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> join1",
+						"join1 window(over(COMPANY,",
+						"          FUNCTION),",
+						"     asc(PERIOD, true),",
+						"     CumSum_NetHires = sum({Netto Neueinstellungen})) ~> window1",
+						"window1 derive({EB Budget} = {EB_FTE_SUM}+{CumSum_NetHires}) ~> derivedColumn1",
+						"derivedColumn1 window(over(FPR_COMPANY,",
+						"          FPR_FUNCTION),",
+						"     asc(PERIOD, true),",
+						"     {AB Budget} = iif(isNull(lag({EB Budget}, 1)), {EB_FTE_SUM}, lag({EB Budget}, 1))) ~> ABhinzufuegen",
+						"pivot1 derive({Netto Neueinstellungen} = toDecimal(byName('Netto Neueinstellungen'))) ~> MapDrifted1",
+						"MapDrifted1, Translation join(FUNCTION == SRC_VALUE,",
+						"     joinType:'left',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> join2",
+						"ABhinzufuegen sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     truncate:true,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          PERIOD,",
+						"          COMPANY,",
+						"          FUNCTION = TRANSLATION,",
+						"          EB_FTE_SUM_DEZ23 = EB_FTE_SUM,",
+						"          NET_NEW_HIRES = {Netto Neueinstellungen},",
+						"          CumSum_NetHires,",
+						"          {EB Budget},",
+						"          {AB Budget}",
+						"     )) ~> sink2"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/400_PERSONELL_BUDGET_unpivot')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "200_PERSONELL_BUDGET_TMP",
+								"type": "DatasetReference"
+							},
+							"name": "Budget200TMP"
+						},
+						{
+							"dataset": {
+								"referenceName": "200_CompanyTranslation",
+								"type": "DatasetReference"
+							},
+							"name": "Ges"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "400_Personell_Budget",
+								"type": "DatasetReference"
+							},
+							"name": "sink2"
+						},
+						{
+							"dataset": {
+								"referenceName": "400_Personell_Budget",
+								"type": "DatasetReference"
+							},
+							"name": "sink3"
+						},
+						{
+							"dataset": {
+								"referenceName": "400_Personell_Budget",
+								"type": "DatasetReference"
+							},
+							"name": "sink4"
+						},
+						{
+							"dataset": {
+								"referenceName": "400_Personell_Budget",
+								"type": "DatasetReference"
+							},
+							"name": "sink5"
+						}
+					],
+					"transformations": [
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "derivedColumn2"
+						},
+						{
+							"name": "derivedColumn3"
+						},
+						{
+							"name": "derivedColumn4"
+						},
+						{
+							"name": "filter1"
+						},
+						{
+							"name": "filter2"
+						},
+						{
+							"name": "filter3"
+						},
+						{
+							"name": "filter4"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          COMPANY as string,",
+						"          FUNCTION as string,",
+						"          PERIOD as string,",
+						"          Churn as decimal(16,2),",
+						"          Endbestand as decimal(16,2),",
+						"          {New-Joiner} as decimal(16,2),",
+						"          AB as decimal(16,2)",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> Budget200TMP",
+						"source(output(",
+						"          COMPANY as string,",
+						"          COMPANY_KEY as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> Ges",
+						"Budget200TMP derive(KPI = \"Churn\") ~> derivedColumn1",
+						"Budget200TMP derive(KPI = \"Endbestand\") ~> derivedColumn2",
+						"Budget200TMP derive(KPI = \"New-Joiner\") ~> derivedColumn3",
+						"Budget200TMP derive(KPI = \"AB\") ~> derivedColumn4",
+						"derivedColumn4 filter(AB != toDecimal(0)) ~> filter1",
+						"derivedColumn3 filter({New-Joiner} != toDecimal(0)) ~> filter2",
+						"derivedColumn2 filter(Endbestand != toDecimal(0)) ~> filter3",
+						"derivedColumn1 filter(Churn != toDecimal(0)) ~> filter4",
+						"filter4 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          COMPANY as string,",
+						"          KPI as string,",
+						"          FUNCTION as string,",
+						"          PERIOD as string,",
+						"          BUDGET_HC as decimal(27,4),",
+						"          BUDGET_FTE as decimal(27,4)",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          COMPANY,",
+						"          FUNCTION,",
+						"          PERIOD,",
+						"          KPI,",
+						"          BUDGET_FTE = Churn",
+						"     )) ~> sink2",
+						"filter3 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          COMPANY as string,",
+						"          KPI as string,",
+						"          FUNCTION as string,",
+						"          PERIOD as string,",
+						"          BUDGET_HC as decimal(27,4),",
+						"          BUDGET_FTE as decimal(27,4)",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          COMPANY,",
+						"          KPI,",
+						"          FUNCTION,",
+						"          PERIOD,",
+						"          BUDGET_FTE = Endbestand",
+						"     )) ~> sink3",
+						"filter2 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          COMPANY as string,",
+						"          KPI as string,",
+						"          FUNCTION as string,",
+						"          PERIOD as string,",
+						"          BUDGET_HC as decimal(27,4),",
+						"          BUDGET_FTE as decimal(27,4)",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          COMPANY,",
+						"          KPI,",
+						"          FUNCTION,",
+						"          PERIOD,",
+						"          BUDGET_FTE = {New-Joiner}",
+						"     )) ~> sink4",
+						"filter1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          COMPANY as string,",
+						"          KPI as string,",
+						"          FUNCTION as string,",
+						"          PERIOD as string,",
+						"          BUDGET_HC as decimal(27,4),",
+						"          BUDGET_FTE as decimal(27,4)",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          COMPANY,",
+						"          KPI,",
+						"          FUNCTION,",
+						"          PERIOD,",
+						"          BUDGET_FTE = AB",
+						"     )) ~> sink5"
+					]
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}

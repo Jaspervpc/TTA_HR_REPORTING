@@ -1,0 +1,226 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "TTA-HR-ADF"
+		},
+		"AzureDatabricks HR Reporting_accessToken": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accessToken' of 'AzureDatabricks HR Reporting'"
+		},
+		"AzureHRBlobStorage_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureHRBlobStorage'"
+		},
+		"AzureSqlDatabaseLucanet_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabaseLucanet'"
+		},
+		"Azure_FinReport_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Azure_FinReport'"
+		},
+		"HR_REPORT_DB_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'HR_REPORT_DB'"
+		},
+		"Sharepoint_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'Sharepoint'"
+		},
+		"temd_functionKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'functionKey' of 'temd'"
+		},
+		"Personio Rest API_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.personio.de/v1/company/custom-reports/reports/86a27088-ef39-4cc2-8a25-f967f6f62eea"
+		},
+		"RestService_StandardApi_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://api.personio.de/v1/company/employees"
+		},
+		"Sharepoint_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://timetoactgroup.sharepoint.com/:f:/r/sites/TTG-PowerBIReporting/Shared%20Documents/HR%20Reporting/Historische%20Daten%20aus%20altem%20Reporting/Finale%20Dateien%20zum%20Upload%20in%20PowerBI?csf=1&web=1&e=bRKzhf"
+		},
+		"Sharepoint_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "markus.wittmer@timetoact.de"
+		},
+		"temd_properties_typeProperties_functionAppUrl": {
+			"type": "string",
+			"defaultValue": "https://transform-employee-md.azurewebsites.net/api/run_script_emp?"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "TTA-HR-ADF_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"AzureDatabricks HR Reporting_accessToken": {
+						"value": "[parameters('AzureDatabricks HR Reporting_accessToken')]"
+					},
+					"AzureHRBlobStorage_connectionString": {
+						"value": "[parameters('AzureHRBlobStorage_connectionString')]"
+					},
+					"AzureSqlDatabaseLucanet_connectionString": {
+						"value": "[parameters('AzureSqlDatabaseLucanet_connectionString')]"
+					},
+					"Azure_FinReport_connectionString": {
+						"value": "[parameters('Azure_FinReport_connectionString')]"
+					},
+					"HR_REPORT_DB_connectionString": {
+						"value": "[parameters('HR_REPORT_DB_connectionString')]"
+					},
+					"Sharepoint_password": {
+						"value": "[parameters('Sharepoint_password')]"
+					},
+					"temd_functionKey": {
+						"value": "[parameters('temd_functionKey')]"
+					},
+					"Personio Rest API_properties_typeProperties_url": {
+						"value": "[parameters('Personio Rest API_properties_typeProperties_url')]"
+					},
+					"RestService_StandardApi_properties_typeProperties_url": {
+						"value": "[parameters('RestService_StandardApi_properties_typeProperties_url')]"
+					},
+					"Sharepoint_properties_typeProperties_url": {
+						"value": "[parameters('Sharepoint_properties_typeProperties_url')]"
+					},
+					"Sharepoint_properties_typeProperties_userName": {
+						"value": "[parameters('Sharepoint_properties_typeProperties_userName')]"
+					},
+					"temd_properties_typeProperties_functionAppUrl": {
+						"value": "[parameters('temd_properties_typeProperties_functionAppUrl')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "TTA-HR-ADF_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'TTA-HR-ADF_ArmTemplate_0')]"
+			]
+		},
+		{
+			"name": "TTA-HR-ADF_ArmTemplate_2",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_2.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'TTA-HR-ADF_ArmTemplate_1')]"
+			]
+		},
+		{
+			"name": "TTA-HR-ADF_ArmTemplate_3",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_3.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'TTA-HR-ADF_ArmTemplate_2')]"
+			]
+		},
+		{
+			"name": "TTA-HR-ADF_ArmTemplate_4",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_4.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'TTA-HR-ADF_ArmTemplate_3')]"
+			]
+		},
+		{
+			"name": "TTA-HR-ADF_ArmTemplate_5",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_5.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'TTA-HR-ADF_ArmTemplate_4')]"
+			]
+		}
+	]
+}

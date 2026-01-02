@@ -1,0 +1,1369 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "TTA-HR-ADF"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable6')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "HR_REPORT_DB",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "150_STG",
+					"table": "PERSONIO_API"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable9')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "HR_REPORT_DB",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "200_STG",
+					"table": "BUDGET2024"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Budget_CSV')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureHRBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "HR-Planung 2023_Daten.csv",
+						"folderPath": "Planung",
+						"container": "hrreporting"
+					},
+					"columnDelimiter": ";",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Gesellschaft",
+						"type": "String"
+					},
+					{
+						"name": "Kennzahl",
+						"type": "String"
+					},
+					{
+						"name": "Funktionsgruppe",
+						"type": "String"
+					},
+					{
+						"name": "202301",
+						"type": "String"
+					},
+					{
+						"name": "202302",
+						"type": "String"
+					},
+					{
+						"name": "202303",
+						"type": "String"
+					},
+					{
+						"name": "202304",
+						"type": "String"
+					},
+					{
+						"name": "202305",
+						"type": "String"
+					},
+					{
+						"name": "202306",
+						"type": "String"
+					},
+					{
+						"name": "202307",
+						"type": "String"
+					},
+					{
+						"name": "202308",
+						"type": "String"
+					},
+					{
+						"name": "202309",
+						"type": "String"
+					},
+					{
+						"name": "202310",
+						"type": "String"
+					},
+					{
+						"name": "202311",
+						"type": "String"
+					},
+					{
+						"name": "202312",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CSV_BUDGET_NET_NEW_HIRES24')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureHRBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "HR - Netto Neueinstellungen 2024.csv",
+						"folderPath": "Planung",
+						"container": "hrreporting"
+					},
+					"columnDelimiter": ";",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Gesellschaft;Kennzahl;Funktionsgruppe;01.01.2024;01.02.2024;01.03.2024;01.04.2024;01.05.2024;01.06.2024;01.07.2024;01.08.2024;01.09.2024;01.10.2024;01.11.2024;01.12.2024",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CompanyMapping')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureHRBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"sheetName": "Tabelle1",
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "CompanyMapping.xlsx",
+						"folderPath": "Übersetzungen",
+						"container": "hrreporting"
+					},
+					"firstRowAsHeader": true
+				},
+				"schema": [
+					{
+						"name": "Gesellschaft",
+						"type": "String"
+					},
+					{
+						"name": "Kürzel",
+						"type": "String"
+					},
+					{
+						"name": "gültig bis",
+						"type": "String"
+					},
+					{
+						"name": "gültig ab",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/D_PERIOD')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "HR_REPORT_DB",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "DP_PERIOD_ID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "DP_PERIOD",
+						"type": "varchar"
+					},
+					{
+						"name": "DP_START_DATE",
+						"type": "date"
+					},
+					{
+						"name": "DP_END_DATE",
+						"type": "date"
+					}
+				],
+				"typeProperties": {
+					"schema": "400_DWH",
+					"table": "D_PERIOD"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureHRBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "HR - Netto Neueinstellungen 2023.csv",
+						"folderPath": "Planung",
+						"container": "hrreporting"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Gesellschaft;Kennzahl;Funktionsgruppe;01.01.2024;01.02.2024;01.03.2024;01.04.2024;01.05.2024;01.06.2024;01.07.2024;01.08.2024;01.09.2024;01.10.2024;01.11.2024;01.12.2024",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureHRBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "Test Data",
+						"folderPath": "Personio",
+						"container": "hrreporting"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Excel_Translations')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureHRBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"sheetName": "Tabelle1",
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "Jobfunctions HR Reporting.xlsx",
+						"folderPath": "Übersetzungen",
+						"container": "hrreporting"
+					},
+					"firstRowAsHeader": true
+				},
+				"schema": [
+					{
+						"name": "Bereich",
+						"type": "String"
+					},
+					{
+						"name": "Deutsch",
+						"type": "String"
+					},
+					{
+						"name": "Deutsch",
+						"type": "String"
+					},
+					{
+						"name": "Englisch",
+						"type": "String"
+					},
+					{
+						"name": "für PowerBi ",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FINREP_FINREPORT')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Azure_FinReport",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "GES",
+						"type": "varchar"
+					},
+					{
+						"name": "KTO",
+						"type": "varchar"
+					},
+					{
+						"name": "JAHR",
+						"type": "varchar"
+					},
+					{
+						"name": "MONAT",
+						"type": "varchar"
+					},
+					{
+						"name": "PERIODE",
+						"type": "varchar"
+					},
+					{
+						"name": "SALDO",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "SALDO_YTD",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "BUDGET",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "BUDGET_YTD",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "KTO_ID",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "F_FINREPORT"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FinRepCompanies')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Azure_FinReport",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "GES",
+						"type": "nvarchar"
+					},
+					{
+						"name": "GES_BEZ",
+						"type": "nvarchar"
+					},
+					{
+						"name": "PNLSHEET",
+						"type": "nvarchar"
+					},
+					{
+						"name": "GES_MAPPING_CRM",
+						"type": "nvarchar"
+					},
+					{
+						"name": "COMPANY_BU",
+						"type": "nvarchar"
+					},
+					{
+						"name": "GES_MAPPING_CRM_SHORT",
+						"type": "nvarchar"
+					},
+					{
+						"name": "GES_LUCANET",
+						"type": "nvarchar"
+					},
+					{
+						"name": "BRAND_ID",
+						"type": "nchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "D_GES"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FinancialDataLucanetXLSX')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureHRBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"sheetName": "Subsidiaries Overview per month",
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "Financial Reporting Data_LN.xlsx",
+						"folderPath": "Financials",
+						"container": "hrreporting"
+					},
+					"range": "D8:AC500",
+					"firstRowAsHeader": true
+				},
+				"schema": [
+					{
+						"name": "Gesellschaft",
+						"type": "String"
+					},
+					{
+						"name": "Konto",
+						"type": "String"
+					},
+					{
+						"name": "2022-01-31",
+						"type": "String"
+					},
+					{
+						"name": "2022-02-28",
+						"type": "String"
+					},
+					{
+						"name": "2022-03-31",
+						"type": "String"
+					},
+					{
+						"name": "2022-04-30",
+						"type": "String"
+					},
+					{
+						"name": "2022-05-31",
+						"type": "String"
+					},
+					{
+						"name": "2022-06-30",
+						"type": "String"
+					},
+					{
+						"name": "2022-07-31",
+						"type": "String"
+					},
+					{
+						"name": "2022-08-31",
+						"type": "String"
+					},
+					{
+						"name": "2022-09-30",
+						"type": "String"
+					},
+					{
+						"name": "2022-10-31",
+						"type": "String"
+					},
+					{
+						"name": "2022-11-30",
+						"type": "String"
+					},
+					{
+						"name": "2022-12-31",
+						"type": "String"
+					},
+					{
+						"name": "2023-01-31",
+						"type": "String"
+					},
+					{
+						"name": "2023-02-28",
+						"type": "String"
+					},
+					{
+						"name": "2023-03-31",
+						"type": "String"
+					},
+					{
+						"name": "2023-04-30",
+						"type": "String"
+					},
+					{
+						"name": "2023-05-31",
+						"type": "String"
+					},
+					{
+						"name": "2023-06-30",
+						"type": "String"
+					},
+					{
+						"name": "2023-07-31",
+						"type": "String"
+					},
+					{
+						"name": "2023-08-31",
+						"type": "String"
+					},
+					{
+						"name": "2023-09-30",
+						"type": "String"
+					},
+					{
+						"name": "2023-10-31",
+						"type": "String"
+					},
+					{
+						"name": "2023-11-30",
+						"type": "String"
+					},
+					{
+						"name": "2023-12-31",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/JSON_PersonioAPI')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureHRBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "JSON_PERSONIOAPI",
+						"folderPath": "Personio",
+						"container": "hrreporting"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/JSON_standard_Api')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureHRBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "JSON_STANDARDAPI",
+						"folderPath": "Personio",
+						"container": "hrreporting"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Json1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureHRBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "JSON_PERSONIOAPI",
+						"folderPath": "Personio",
+						"container": "hrreporting"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"success": {
+							"type": "boolean"
+						},
+						"metadata": {
+							"type": "object",
+							"properties": {
+								"total_elements": {
+									"type": "integer"
+								},
+								"current_page": {
+									"type": "integer"
+								},
+								"total_pages": {
+									"type": "integer"
+								}
+							}
+						},
+						"offset": {
+							"type": "integer"
+						},
+						"limit": {
+							"type": "integer"
+						},
+						"data": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"type": {
+										"type": "string"
+									},
+									"attributes": {
+										"type": "object",
+										"properties": {
+											"id": {
+												"type": "string"
+											},
+											"name": {
+												"type": "string"
+											},
+											"description": {
+												"type": "string"
+											},
+											"author_first_name": {
+												"type": "string"
+											},
+											"author_last_name": {
+												"type": "string"
+											},
+											"type": {
+												"type": "string"
+											},
+											"status": {
+												"type": "string"
+											},
+											"start_date": {
+												"type": "string"
+											},
+											"end_date": {
+												"type": "string"
+											},
+											"created_at": {
+												"type": "string"
+											},
+											"updated_at": {
+												"type": "string"
+											},
+											"data_refreshed_at": {
+												"type": "string"
+											},
+											"columns": {
+												"type": "array",
+												"items": {
+													"type": "string"
+												}
+											},
+											"filters": {
+												"type": "array"
+											},
+											"period_type": {
+												"type": "string"
+											},
+											"items": {
+												"type": "array",
+												"items": {
+													"type": "object",
+													"properties": {
+														"employee_id": {
+															"type": "integer"
+														},
+														"historical_attributes": {
+															"type": "array",
+															"items": {
+																"type": "object",
+																"properties": {
+																	"attribute_id": {
+																		"type": "string"
+																	},
+																	"data_type": {
+																		"type": "string"
+																	},
+																	"effective_date": {
+																		"type": "string"
+																	},
+																	"employee_id": {
+																		"type": "integer"
+																	},
+																	"value": {
+																		"type": "string"
+																	}
+																}
+															}
+														}
+													}
+												}
+											},
+											"archival_status": {
+												"type": "string"
+											},
+											"archived_at": {
+												"type": "null"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Json2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureHRBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "JSON_PERSONIOAPI",
+						"folderPath": "Personio",
+						"container": "hrreporting"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"success": {
+							"type": "boolean"
+						},
+						"metadata": {
+							"type": "object",
+							"properties": {
+								"total_elements": {
+									"type": "integer"
+								},
+								"current_page": {
+									"type": "integer"
+								},
+								"total_pages": {
+									"type": "integer"
+								}
+							}
+						},
+						"offset": {
+							"type": "integer"
+						},
+						"limit": {
+							"type": "integer"
+						},
+						"data": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"type": {
+										"type": "string"
+									},
+									"attributes": {
+										"type": "object",
+										"properties": {
+											"id": {
+												"type": "string"
+											},
+											"name": {
+												"type": "string"
+											},
+											"description": {
+												"type": "string"
+											},
+											"author_first_name": {
+												"type": "string"
+											},
+											"author_last_name": {
+												"type": "string"
+											},
+											"type": {
+												"type": "string"
+											},
+											"status": {
+												"type": "string"
+											},
+											"start_date": {
+												"type": "string"
+											},
+											"end_date": {
+												"type": "string"
+											},
+											"created_at": {
+												"type": "string"
+											},
+											"updated_at": {
+												"type": "string"
+											},
+											"data_refreshed_at": {
+												"type": "string"
+											},
+											"columns": {
+												"type": "array",
+												"items": {
+													"type": "string"
+												}
+											},
+											"filters": {
+												"type": "array"
+											},
+											"period_type": {
+												"type": "string"
+											},
+											"items": {
+												"type": "array",
+												"items": {
+													"type": "object",
+													"properties": {
+														"employee_id": {
+															"type": "integer"
+														},
+														"historical_attributes": {
+															"type": "array",
+															"items": {
+																"type": "object",
+																"properties": {
+																	"attribute_id": {
+																		"type": "string"
+																	},
+																	"data_type": {
+																		"type": "string"
+																	},
+																	"effective_date": {
+																		"type": "string"
+																	},
+																	"employee_id": {
+																		"type": "integer"
+																	},
+																	"value": {
+																		"type": "string"
+																	}
+																}
+															}
+														}
+													}
+												}
+											},
+											"archival_status": {
+												"type": "string"
+											},
+											"archived_at": {
+												"type": "null"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LucanetSQL_Data')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabaseLucanet",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "DataLevelID",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "DataLevelName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "DataLevelType",
+						"type": "nvarchar"
+					},
+					{
+						"name": "PeriodFrom",
+						"type": "nvarchar"
+					},
+					{
+						"name": "PeriodTo",
+						"type": "nvarchar"
+					},
+					{
+						"name": "IsClosed",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "IsArchived",
+						"type": "smallint",
+						"precision": 5
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Facts"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Merge_Employees')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureHRBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"sheetName": "Tabelle1",
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "Merged_Employees.xlsx",
+						"folderPath": "Übersetzungen",
+						"container": "hrreporting"
+					},
+					"firstRowAsHeader": true
+				},
+				"schema": [
+					{
+						"name": "LOAD_PERIOD",
+						"type": "String"
+					},
+					{
+						"name": "ID",
+						"type": "String"
+					},
+					{
+						"name": "EXIT_TYPE",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PersonioASCII')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureHRBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "Personio/aktueller_Monat",
+						"container": "hrreporting"
+					},
+					"columnDelimiter": ";",
+					"encodingName": "UTF-8",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Status",
+						"type": "String"
+					},
+					{
+						"name": "ID",
+						"type": "String"
+					},
+					{
+						"name": "E-Mail",
+						"type": "String"
+					},
+					{
+						"name": "Nachname (bürgerlich)",
+						"type": "String"
+					},
+					{
+						"name": "Vorname (bürgerlich)",
+						"type": "String"
+					},
+					{
+						"name": "Abteilung",
+						"type": "String"
+					},
+					{
+						"name": "Alter",
+						"type": "String"
+					},
+					{
+						"name": "Angestellt als",
+						"type": "String"
+					},
+					{
+						"name": "Anstelldatum",
+						"type": "String"
+					},
+					{
+						"name": "Anstellungsart",
+						"type": "String"
+					},
+					{
+						"name": "Mitarbeitergruppen nach Funktion",
+						"type": "String"
+					},
+					{
+						"name": "Austrittsart11",
+						"type": "String"
+					},
+					{
+						"name": "Austrittsart12",
+						"type": "String"
+					},
+					{
+						"name": "Austrittsdatum (aktueller Beschäftigungszeitraum)",
+						"type": "String"
+					},
+					{
+						"name": "Betriebsstätte",
+						"type": "String"
+					},
+					{
+						"name": "Betriebszugehörigkeit (in Jahren)",
+						"type": "String"
+					},
+					{
+						"name": "Eintrittsdatum (aktueller Beschäftigungszeitraum)",
+						"type": "String"
+					},
+					{
+						"name": "Ende des Arbeitsverhältnisses",
+						"type": "String"
+					},
+					{
+						"name": "Ersteintrittsdatum",
+						"type": "String"
+					},
+					{
+						"name": "FTE",
+						"type": "String"
+					},
+					{
+						"name": "Geschlecht",
+						"type": "String"
+					},
+					{
+						"name": "Gesellschaft",
+						"type": "String"
+					},
+					{
+						"name": "Grad der Behinderung",
+						"type": "String"
+					},
+					{
+						"name": "Kostenstelle",
+						"type": "String"
+					},
+					{
+						"name": "Kündigung (Datum)",
+						"type": "String"
+					},
+					{
+						"name": "Kündigungsgrund",
+						"type": "String"
+					},
+					{
+						"name": "Mitarbeitendenzahl (Status „Aktiv“ und „Auszeit“)",
+						"type": "String"
+					},
+					{
+						"name": "DATEV Personalnummer",
+						"type": "String"
+					},
+					{
+						"name": "Position",
+						"type": "String"
+					},
+					{
+						"name": "Wochenstunden",
+						"type": "String"
+					},
+					{
+						"name": "Bad Churn",
+						"type": "String"
+					},
+					{
+						"name": "Arbeits- und Wegeunfall / Work and Commute-related Accidents – genommen (Tage)",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PersonioASCII_bis_202301')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureHRBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "Data_2022_08.csv",
+						"folderPath": "Personio/Schnittstelle_vor_Personio",
+						"container": "hrreporting"
+					},
+					"columnDelimiter": ";",
+					"encodingName": "UTF-8",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Status",
+						"type": "String"
+					},
+					{
+						"name": "ID",
+						"type": "String"
+					},
+					{
+						"name": "E-Mail",
+						"type": "String"
+					},
+					{
+						"name": "Name",
+						"type": "String"
+					},
+					{
+						"name": " Vorname",
+						"type": "String"
+					},
+					{
+						"name": "Abteilung",
+						"type": "String"
+					},
+					{
+						"name": "Alter",
+						"type": "String"
+					},
+					{
+						"name": "Mitarbeitergruppen nach Anstellungsart",
+						"type": "String"
+					},
+					{
+						"name": "Anstellungsdatum",
+						"type": "String"
+					},
+					{
+						"name": "Anstellungsart",
+						"type": "String"
+					},
+					{
+						"name": "Mitarbeitergruppen nach Funktion",
+						"type": "String"
+					},
+					{
+						"name": "Austrittsart11",
+						"type": "String"
+					},
+					{
+						"name": "Austrittsart12",
+						"type": "String"
+					},
+					{
+						"name": "Austrittsdatum (aktueller Beschäftigungszeitraum)",
+						"type": "String"
+					},
+					{
+						"name": "Betriebsstätte",
+						"type": "String"
+					},
+					{
+						"name": "Betriebszugehörigkeit (in Jahren)",
+						"type": "String"
+					},
+					{
+						"name": "Eintrittsdatum (aktueller Beschäftigungszeitraum)",
+						"type": "String"
+					},
+					{
+						"name": "Ende des Arbeitsverhältnisses",
+						"type": "String"
+					},
+					{
+						"name": "Ersteintrittsdatum",
+						"type": "String"
+					},
+					{
+						"name": "FTE",
+						"type": "String"
+					},
+					{
+						"name": "Geschlecht",
+						"type": "String"
+					},
+					{
+						"name": "Gesellschaft",
+						"type": "String"
+					},
+					{
+						"name": "Grad der Schwerbehinderung",
+						"type": "String"
+					},
+					{
+						"name": "Kostenstelle",
+						"type": "String"
+					},
+					{
+						"name": "Kündigung (Datum)",
+						"type": "String"
+					},
+					{
+						"name": "Kündigungsgrund",
+						"type": "String"
+					},
+					{
+						"name": "Mitarbeiterzahl (Status „Aktiv“ und „Auszeit“)",
+						"type": "String"
+					},
+					{
+						"name": "DATEV Personalnummer",
+						"type": "String"
+					},
+					{
+						"name": "Position",
+						"type": "String"
+					},
+					{
+						"name": "Wochenstunden",
+						"type": "String"
+					},
+					{
+						"name": "Bad Churn",
+						"type": "String"
+					},
+					{
+						"name": "Arbeitsunfall",
+						"type": "String"
+					},
+					{
+						"name": "Arbeitsbedingter Todesfall",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		}
+	]
+}
