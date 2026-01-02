@@ -56,7 +56,7 @@
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
-						"activity": "transform-employee-md",
+						"activity": "Azure Function1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -871,7 +871,7 @@
 				]
 			},
 			{
-				"name": "transform-employee-md",
+				"name": "Azure Function1",
 				"type": "AzureFunctionActivity",
 				"dependsOn": [],
 				"policy": {
@@ -883,7 +883,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"functionName": "run_script_emp",
+					"functionName": "run-script-emp",
 					"method": "GET"
 				},
 				"linkedServiceName": {
@@ -901,7 +901,7 @@
 			"name": "FULL LOAD - PERSONIO API EMPLOYEES"
 		},
 		"annotations": [],
-		"lastPublishTime": "2025-10-08T12:34:13Z"
+		"lastPublishTime": "2025-10-21T09:22:41Z"
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"
 }

@@ -141,8 +141,6 @@
 			{
 				"name": "Get Bearer Standard Api",
 				"type": "WebActivity",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -164,8 +162,6 @@
 			{
 				"name": "Set Token Standard Api",
 				"type": "SetVariable",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Get Bearer Standard Api",

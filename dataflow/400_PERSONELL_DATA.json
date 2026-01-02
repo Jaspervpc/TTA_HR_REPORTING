@@ -38,6 +38,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "Companytranslations"
+				},
+				{
+					"dataset": {
+						"referenceName": "Merge_Employees",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
 				}
 			],
 			"sinks": [
@@ -91,6 +98,12 @@
 				},
 				{
 					"name": "SucheGesKurz"
+				},
+				{
+					"name": "join1"
+				},
+				{
+					"name": "derivedColumn1"
 				}
 			],
 			"scriptLines": [
@@ -166,16 +179,26 @@
 				"     format: 'table') ~> Uebersetzung2",
 				"source(output(",
 				"          COMPANY as string,",
-				"          COMPANY_KEY as string",
+				"          COMPANY_KEY as string,",
+				"          VALID_TO as integer,",
+				"          VALID_FROM as integer",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> Companytranslations",
+				"source(output(",
+				"          LOAD_PERIOD as string,",
+				"          ID as string,",
+				"          EXIT_TYPE as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
 				"lookExitType derive(LengthOfEmploymentRounded = iif(isNull(LENGTH_OF_EMPLOYMENT_IN_YEARS), toInteger(0), toInteger(round(LENGTH_OF_EMPLOYMENT_IN_YEARS, 0))),",
 				"          AgeRounded = iif( isNull(AGE), toInteger(0), toInteger(round(AGE, 0))),",
-				"          Jahr = substring(LOAD_PERIOD, 1, 4),",
-				"          Monat = substring(LOAD_PERIOD, 5, 2),",
+				"          Jahr = substring(PersonioBasis@LOAD_PERIOD, 1, 4),",
+				"          Monat = substring(PersonioBasis@LOAD_PERIOD, 5, 2),",
 				"          HCNewHires = iif(\r",
 				"    ENTRY_DATE_CURRENT_EMPLOYMENT_PERIOD >= DP_START_DATE \r",
 				"    && ENTRY_DATE_CURRENT_EMPLOYMENT_PERIOD <= DP_END_DATE \r",
@@ -206,10 +229,10 @@
 				"          PLACE_OF_BUSINESS,",
 				"          LengthOfEmploymentRounded,",
 				"          Geschlecht,",
-				"          Companytranslations@COMPANY_KEY,",
+				"          PersonioBasis@COMPANY_KEY,",
 				"          DEGREE_OF_SEVERE_DISABILITY,",
 				"          COST_CENTRE,",
-				"          LOAD_PERIOD,",
+				"          PersonioBasis@LOAD_PERIOD,",
 				"          DP_PERIOD_ID,",
 				"          Jahr,",
 				"          Monat,",
@@ -265,7 +288,7 @@
 				"          DisabledFTE = iif(DEGREE_OF_SEVERE_DISABILITY == \"Ja\" || DEGREE_OF_SEVERE_DISABILITY == \"mind. 50%\", AktiveMAInclGroupChange * FTE, toDecimal(0, 1, 0)),",
 				"          AccidentAtWork = iif(ACCIDENT_AT_WORK == \"Ja\", AktiveMAInclGroupChange, toDecimal(0, 1, 0)),",
 				"          WorkRelatedFatalities = iif(WORKRELATED_DEATH == \"Ja\", AktiveMAInclGroupChange, toDecimal(0, 1, 0))) ~> BerechnungenVorabTeil2",
-				"filter0, PERIODE lookup(LOAD_PERIOD == DP_PERIOD,",
+				"filter0, PERIODE lookup(PersonioBasis@LOAD_PERIOD == DP_PERIOD,",
 				"     multiple: false,",
 				"     pickup: 'any',",
 				"     broadcast: 'auto')~> SuchePeriode",
@@ -337,11 +360,19 @@
 				"     multiple: false,",
 				"     pickup: 'any',",
 				"     broadcast: 'auto')~> lookExitType",
-				"PersonioBasis filter(COMPANY != '0') ~> filter0",
+				"derivedColumn1 filter(COMPANY != '0') ~> filter0",
 				"SuchePeriode, Companytranslations lookup(PersonioBasis@COMPANY == Companytranslations@COMPANY,",
 				"     multiple: false,",
 				"     pickup: 'any',",
-				"     broadcast: 'auto')~> SucheGesKurz",
+				"     broadcast: 'right')~> SucheGesKurz",
+				"PersonioBasis, source1 join(PersonioBasis@LOAD_PERIOD == source1@LOAD_PERIOD",
+				"     && PersonioBasis@ID == source1@ID,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 derive(EXIT_TYPE = iif(isNull(source1@EXIT_TYPE) || source1@EXIT_TYPE == '', PersonioBasis@EXIT_TYPE, source1@EXIT_TYPE),",
+				"          LOAD_PERIOD_INT = toInteger(PersonioBasis@LOAD_PERIOD)) ~> derivedColumn1",
 				"BerechnungenNachAggregationTeil2 sink(allowSchemaDrift: true,",
 				"     validateSchema: true,",
 				"     input(",

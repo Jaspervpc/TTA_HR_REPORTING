@@ -1,0 +1,36 @@
+{
+	"name": "Merge_Employees",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureHRBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Tabelle1",
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "Merged_Employees.xlsx",
+				"folderPath": "Übersetzungen",
+				"container": "hrreporting"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "LOAD_PERIOD",
+				"type": "String"
+			},
+			{
+				"name": "ID",
+				"type": "String"
+			},
+			{
+				"name": "EXIT_TYPE",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

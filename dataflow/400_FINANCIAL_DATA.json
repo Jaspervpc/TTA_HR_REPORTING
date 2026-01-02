@@ -234,7 +234,7 @@
 				"SucheCompanyKey derive(Ges = iif(isNull(COMPANY_KEY), Gesellschaft, COMPANY_KEY),",
 				"          BU = iif ( equals(KONSEBENE, 'Einzelabschluss HB2 adj.'), iif( equals(SourceType, 'CostCenter'), OrganisationElementName, toString(null())), toString(null()) ),",
 				"          Actuals = iif(equals(VERSION, 1201), VALUE, toDouble(null())),",
-				"          Budget = iif(equals(VERSION, 2479958) || equals(VERSION, 2535825) || equals(VERSION, 2556469), VALUE, toDouble(null())),",
+				"          Budget = iif(equals(VERSION, 2479958) || equals(VERSION, 2535825) || equals(VERSION, 2680301), VALUE, toDouble(null())),",
 				"          Periode6 = concat(left(PERIODE, 4), right(PERIODE, 2))) ~> derivedColumn1",
 				"filter4 aggregate(groupBy(derivedColumn1@Ges,",
 				"          Konto,",

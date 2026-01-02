@@ -38,6 +38,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "Companytranslations"
+				},
+				{
+					"dataset": {
+						"referenceName": "Merge_Employees",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
 				}
 			],
 			"sinks": [
@@ -91,6 +98,15 @@
 				},
 				{
 					"name": "SucheGesKurz"
+				},
+				{
+					"name": "join1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "derivedColumn2"
 				}
 			],
 			"scriptLines": [
@@ -162,12 +178,22 @@
 				"     format: 'table') ~> Uebersetzung2",
 				"source(output(",
 				"          COMPANY as string,",
-				"          COMPANY_KEY as string",
+				"          COMPANY_KEY as string,",
+				"          VALID_TO as integer,",
+				"          VALID_FROM as integer",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> Companytranslations",
+				"source(output(",
+				"          LOAD_PERIOD as string,",
+				"          ID as string,",
+				"          EXIT_TYPE as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
 				"lookExitType derive(LengthOfEmploymentRounded = iif(isNull(SEM_TENURE), toInteger(0), toInteger(round(SEM_TENURE, 0))),",
 				"          Jahr = substring(SEM_LOAD_PERIOD, 1, 4),",
 				"          Monat = substring(SEM_LOAD_PERIOD, 5, 2),",
@@ -243,7 +269,21 @@
 				"      SEM_BAD_CHURN == \"1\" && HCLeavers == 1, toDecimal(1, 18, 4)),",
 				"          EmployeeGroupFunction = replace(SEM_EMPLOYEE_GROUPS_BY_FUNCTION, \"A¼\", \"ü\"),",
 				"          HiredAs = replace(replace(SEM_HIRED_AS, \"A¼\", \"ü\"), \"A¤\", \"ä\"),",
-				"          DisabledHC = iif(SEM_DEGREE_OF_SEVERE_DISABILITY == \"Ja\" || SEM_DEGREE_OF_SEVERE_DISABILITY == \"mind. 50%\", AktiveMAInclGroupChange, toDecimal(0, 1, 0)),",
+				"          DisabledHC = iif(\r",
+				"    isNull(SEM_DEGREE_OF_SEVERE_DISABILITY)\r",
+				"    || trim(lower(SEM_DEGREE_OF_SEVERE_DISABILITY)) == ''\r",
+				"    || trim(lower(SEM_DEGREE_OF_SEVERE_DISABILITY)) == '0%'\r",
+				"    || trim(lower(SEM_DEGREE_OF_SEVERE_DISABILITY)) == '0'\r",
+				"    || trim(lower(SEM_DEGREE_OF_SEVERE_DISABILITY)) == '0.00%'\r",
+				"    || trim(lower(SEM_DEGREE_OF_SEVERE_DISABILITY)) == 'nein'\r",
+				"    || trim(lower(SEM_DEGREE_OF_SEVERE_DISABILITY)) == 'no'\r",
+				"    || trim(lower(SEM_DEGREE_OF_SEVERE_DISABILITY)) == '0 %'\r",
+				"    || trim(lower(SEM_DEGREE_OF_SEVERE_DISABILITY)) == '0,00%'\r",
+				"    || trim(lower(SEM_DEGREE_OF_SEVERE_DISABILITY)) == 'NULL',\r",
+				"    \r",
+				"    0,\r",
+				"    1\r",
+				"),",
 				"          DisabledFTE = iif(SEM_DEGREE_OF_SEVERE_DISABILITY == \"Ja\" || SEM_DEGREE_OF_SEVERE_DISABILITY == \"mind. 50%\", AktiveMAInclGroupChange * numeric_fte, toDecimal(0, 1, 0)),",
 				"          AccidentAtWork = /* iif(start_accident_date <> null(), AktiveMAInclGroupChange, toDecimal(0, 1, 0)) */\r",
 				"0,",
@@ -321,11 +361,23 @@
 				"     multiple: false,",
 				"     pickup: 'any',",
 				"     broadcast: 'auto')~> lookExitType",
-				"PersonioBasis filter(SEM_COMPANY != '0') ~> filter0",
-				"SuchePeriode, Companytranslations lookup(SEM_COMPANY == COMPANY,",
-				"     multiple: false,",
-				"     pickup: 'any',",
-				"     broadcast: 'auto')~> SucheGesKurz",
+				"derivedColumn1 filter(SEM_COMPANY != '0') ~> filter0",
+				"SuchePeriode, Companytranslations lookup(SEM_COMPANY == COMPANY",
+				"     && SEM_LOAD_PERIOD_INT >= VALID_FROM",
+				"     && SEM_LOAD_PERIOD_INT <= VALID_TO,",
+				"     multiple: true,",
+				"     broadcast: 'right',",
+				"     pickup: 'any')~> SucheGesKurz",
+				"PersonioBasis, source1 join(SEM_LOAD_PERIOD == LOAD_PERIOD",
+				"     && SEM_ID == ID,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 derive(SEM_EXIT_TYPE = iif(isNull(EXIT_TYPE) || EXIT_TYPE == '', SEM_EXIT_TYPE, EXIT_TYPE),",
+				"          SEM_LOAD_PERIOD_INT = toInteger(SEM_LOAD_PERIOD)) ~> derivedColumn1",
+				"Companytranslations derive(VALID_TO = toInteger(VALID_TO),",
+				"          VALID_FROM = toInteger(VALID_FROM)) ~> derivedColumn2",
 				"BerechnungenNachAggregationTeil2 sink(allowSchemaDrift: true,",
 				"     validateSchema: true,",
 				"     deletable:false,",
