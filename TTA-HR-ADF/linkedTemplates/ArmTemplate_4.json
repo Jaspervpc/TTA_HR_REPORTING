@@ -4047,6 +4047,8 @@
 					{
 						"name": "Azure Function1",
 						"type": "AzureFunctionActivity",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
