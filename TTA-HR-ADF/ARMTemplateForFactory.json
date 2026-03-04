@@ -134,8 +134,6 @@
 					{
 						"name": "Execute Pipeline 200 STG PERS API",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Execute Pipeline175 STG PERS API",
@@ -1491,8 +1489,6 @@
 					{
 						"name": "Azure Function1",
 						"type": "AzureFunctionActivity",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -1509,6 +1505,53 @@
 						},
 						"linkedServiceName": {
 							"referenceName": "temd",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "usp_UpdateExitType_SubcompanySwitch",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[200_STG].[usp_UpdateExitType_SubcompanySwitch]"
+						},
+						"linkedServiceName": {
+							"referenceName": "HR_REPORT_DB",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "UpdateExitType_SubcompanySwitch",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "Add Excel Data",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[200_STG].[usp_UpdateExitType_SubcompanySwitch]"
+						},
+						"linkedServiceName": {
+							"referenceName": "HR_REPORT_DB",
 							"type": "LinkedServiceReference"
 						}
 					}
@@ -1535,7 +1578,8 @@
 				"[concat(variables('factoryId'), '/datasets/200_STG_SAE')]",
 				"[concat(variables('factoryId'), '/datasets/200_STG_SEM')]",
 				"[concat(variables('factoryId'), '/datasets/200_STG_SEE')]",
-				"[concat(variables('factoryId'), '/linkedServices/temd')]"
+				"[concat(variables('factoryId'), '/linkedServices/temd')]",
+				"[concat(variables('factoryId'), '/linkedServices/HR_REPORT_DB')]"
 			]
 		},
 		{
@@ -4862,6 +4906,8 @@
 					{
 						"name": "400_PERSONELL_DATA_from_FEB24",
 						"type": "ExecuteDataFlow",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",

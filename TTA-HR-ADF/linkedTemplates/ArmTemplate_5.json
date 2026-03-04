@@ -522,6 +522,8 @@
 					{
 						"name": "400_PERSONELL_DATA_from_FEB24",
 						"type": "ExecuteDataFlow",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -636,8 +638,6 @@
 					{
 						"name": "Execute Pipeline 200 STG PERS API",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Execute Pipeline175 STG PERS API",
