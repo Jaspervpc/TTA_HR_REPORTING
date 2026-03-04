@@ -67,8 +67,6 @@
 			{
 				"name": "Execute Pipeline 200 STG PERS API",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Execute Pipeline175 STG PERS API",
