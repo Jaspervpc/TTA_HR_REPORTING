@@ -4,36 +4,36 @@
 	"parameters": {
 		"factoryName": {
 			"type": "string",
-			"metadata": "Data Factory name",
+			"metadata": "Data Factory-Name",
 			"defaultValue": "TTA-HR-ADF"
 		},
 		"AzureDatabricks HR Reporting_accessToken": {
 			"type": "secureString",
-			"metadata": "Secure string for 'accessToken' of 'AzureDatabricks HR Reporting'"
+			"metadata": "Sichere Zeichenfolge für \"accessToken\" von \"AzureDatabricks HR Reporting\""
 		},
 		"AzureHRBlobStorage_connectionString": {
 			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'AzureHRBlobStorage'"
+			"metadata": "Sichere Zeichenfolge für \"connectionString\" von \"AzureHRBlobStorage\""
 		},
 		"AzureSqlDatabaseLucanet_connectionString": {
 			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabaseLucanet'"
+			"metadata": "Sichere Zeichenfolge für \"connectionString\" von \"AzureSqlDatabaseLucanet\""
 		},
 		"Azure_FinReport_connectionString": {
 			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'Azure_FinReport'"
+			"metadata": "Sichere Zeichenfolge für \"connectionString\" von \"Azure_FinReport\""
 		},
 		"HR_REPORT_DB_connectionString": {
 			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'HR_REPORT_DB'"
+			"metadata": "Sichere Zeichenfolge für \"connectionString\" von \"HR_REPORT_DB\""
 		},
 		"Sharepoint_password": {
 			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'Sharepoint'"
+			"metadata": "Sichere Zeichenfolge für \"password\" von \"Sharepoint\""
 		},
 		"temd_functionKey": {
 			"type": "secureString",
-			"metadata": "Secure string for 'functionKey' of 'temd'"
+			"metadata": "Sichere Zeichenfolge für \"functionKey\" von \"temd\""
 		},
 		"Personio Rest API_properties_typeProperties_url": {
 			"type": "string",
@@ -158,8 +158,6 @@
 					{
 						"name": "400_DWH_FAP_PERSONELL_REPORT",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Execute Pipeline 200 STG PERS API",

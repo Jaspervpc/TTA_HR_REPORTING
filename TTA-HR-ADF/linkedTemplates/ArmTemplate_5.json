@@ -4,7 +4,7 @@
 	"parameters": {
 		"factoryName": {
 			"type": "string",
-			"metadata": "Data Factory name",
+			"metadata": "Data Factory-Name",
 			"defaultValue": "TTA-HR-ADF"
 		}
 	},
@@ -662,8 +662,6 @@
 					{
 						"name": "400_DWH_FAP_PERSONELL_REPORT",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Execute Pipeline 200 STG PERS API",
